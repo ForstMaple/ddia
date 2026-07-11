@@ -1,0 +1,4 @@
+interface:
+  display_name: "Explain DDIA Concepts"
+  short_description: "Clarify terminology captured while reading"
+  default_prompt: "Use $explain-ddia-concepts to explain the concepts I noted for chapter 1."

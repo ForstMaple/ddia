@@ -1,0 +1,4 @@
+interface:
+  display_name: "Question DDIA Chapter"
+  short_description: "Create high-value questions for focused reading"
+  default_prompt: "Use $question-ddia-chapter to give me focus questions for chapter 1."

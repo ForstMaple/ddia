@@ -1,0 +1,4 @@
+interface:
+  display_name: "Preview DDIA Chapter"
+  short_description: "Build a useful mental map before reading"
+  default_prompt: "Use $preview-ddia-chapter to prepare me for chapter 1."
