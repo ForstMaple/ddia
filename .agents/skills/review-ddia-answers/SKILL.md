@@ -14,25 +14,25 @@ description: Review a learner's answers to questions about chapters in /workspac
 5. Read answers from `/workspaces/ddia/notes/chN.md` unless the user supplies them elsewhere.
 6. Review populated inline `#### My answer` subsections under `## Focus questions` and the `## Closed-book recall` section. Support legacy notes that still store responses under `## My answers`.
 7. Read `## Concepts` when populated and use the learner's terminology notes as supporting evidence, but leave concept explanations to the concept-explanation skill unless the user asks for them as part of the review.
-8. Write feedback under `## Review`, then add a tailored scenario under `## Application challenge` and a schedule under `## Spaced review`.
+8. Write a `#### Review` subsection immediately after each reviewed answer, so the feedback remains adjacent to its question and answer. Use `## Review` only for chapter-wide feedback, then add a tailored scenario under `## Application challenge` and a schedule under `## Spaced review`.
 9. Preserve the questions, answers, recall, concepts, and all other user-written text exactly.
 
 ## Feedback Format
 
-For each answer, give:
+Immediately below each answer, give:
 
 - **Assessment:** `Solid`, `Mostly right`, `Needs revision`, or `Not answered`.
 - **What works:** identify the sound reasoning precisely.
 - **Clarification:** correct the smallest important misconception or omission, in plain language.
 - **Stronger answer:** provide a concise model answer only when revision would materially help.
 
-Then provide:
+Under `## Review`, provide:
 
 - **Pattern across your answers:** 1–3 observations about the learner's mental model.
 - **Review next:** up to three concepts or chapter sections, ranked by importance.
 - **Follow-up:** 1–3 targeted questions that test the corrected understanding, without answers.
 
-For a large answer set, use a compact table for assessment and reserve detailed comments for misconceptions and high-value ideas.
+For a large answer set, keep each inline review compact and reserve detailed comments for misconceptions and high-value ideas. Do not put a separate assessment table at the end when inline reviews are present.
 
 ## Application Challenge
 
