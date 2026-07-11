@@ -9,42 +9,39 @@ description: Explain key concepts and terminology that a learner records while r
 
 1. Resolve the requested chapter to `/workspaces/ddia/content/en/chN.md` and its note to `/workspaces/ddia/notes/chN.md`. If the chapter cannot be inferred, ask which chapter.
 2. Read the learner's entries under `## Concepts`. If the section is empty, tell the user to add the terms or concepts they want explained; do not invent a list.
-3. Read the relevant chapter passages. Treat the local chapter as authoritative and do not browse unless the user explicitly requests outside context.
+3. Read the relevant chapter passages for context. Use standard technical knowledge when it makes an explanation clearer or more useful; explanations do not need to mirror the book. Do not browse unless the user explicitly requests outside context.
 4. Explain every populated concept unless the user selects a subset.
-5. Write explanations under `## Concept explanations`, creating that section immediately after `## Concepts` if needed.
-6. Preserve the learner's concept entries and all other user-written text exactly.
-7. Report the clickable note path after writing.
+5. Reorganize `## Concepts` when useful: group clearly related concepts, merge duplicates, and choose a logical learning order. Keep useful alternate names in parentheses so the learner's terminology is not lost. Do not force unrelated concepts into a group.
+6. Keep all concept entries and explanations in the single `## Concepts` section; do not create a `## Concept explanations` section.
+7. Preserve personal annotations, questions, examples, starred terms, and uncertainty markers while reorganizing. Preserve all content outside `## Concepts` exactly.
+8. Report the clickable note path after writing.
 
 ## Explanation Format
 
-For each concept, use:
+Prefer a compact structure such as:
 
 ```markdown
-### <concept as written by the learner>
+### <related group, only when useful>
 
-**Plain-language meaning:** <concise explanation>
+**<concept> (<useful alias>)** — <concise explanation, normally 1–3 sentences>.
 
-**Why it matters here:** <role in the chapter's argument or design trade-off>
-
-**Example:** <small concrete example>
-
-**Easy to confuse with:** <comparison when useful; otherwise omit>
-
-**Chapter location:** <actual section heading>
+**<related concept>** — <concise explanation>.
 ```
 
-Keep each explanation proportional to the concept: normally 1–3 sentences per field. When several terms form one model, explain their relationship once and cross-reference it instead of repeating the same material.
+Use short paragraphs or 2–4 bullets when they are clearer. Add an example, comparison, trade-off, or chapter location only when it materially improves understanding. When several terms form one model, explain their relationship once instead of repeating it for every term.
 
 ## Updating Existing Explanations
 
-Replace only explanations previously generated under `## Concept explanations`. Preserve any learner edits, annotations, questions, or examples in that section. If generated text cannot be distinguished safely from learner text, append a new explanation rather than replacing existing content.
+The skill may rewrite and restructure generated material inside `## Concepts`, including headings, ordering, and duplicate entries. Preserve learner-authored annotations, questions, examples, emphasis, and uncertainty markers. If generated and learner-authored text cannot be distinguished safely, retain the text and reorganize around it rather than deleting it.
 
-If a concept entry is ambiguous, explain the most likely chapter-specific meaning and state the interpretation. If two meanings are materially plausible, ask one concise question before writing.
+If a legacy note contains `## Concept explanations`, move only clearly generated explanations beneath their matching entries in `## Concepts`, then remove the legacy heading if it is empty. Do not move or remove text whose authorship or matching concept is uncertain.
+
+If a concept entry is ambiguous, use the most likely chapter-specific meaning and briefly label the assumption. Ask a concise question only when choosing the wrong meaning would materially change the explanation.
 
 ## Guardrails
 
 - Explain mechanisms and trade-offs, not only dictionary definitions.
-- Distinguish the chapter's claims from additional interpretation.
-- Do not silently correct or rewrite the learner's concept notes.
+- Do not contradict the chapter without briefly identifying the difference, but do not imitate the book's wording or framing unnecessarily.
+- Deduplicate only when entries describe the same concept; preserve useful distinctions between closely related terms.
 - Do not duplicate a full chapter summary.
 - Do not add unrelated concepts merely because they appear nearby in the chapter.

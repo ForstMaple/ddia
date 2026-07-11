@@ -42,8 +42,6 @@ Create this Markdown structure:
 
 ## Concepts
 
-## Concept explanations
-
 ## Review
 
 ## Application challenge
