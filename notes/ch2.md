@@ -201,7 +201,89 @@ Close the chapter before answering these prompts.
 
 ## Concepts
 
-## Concept explanations
+### System qualities
+
+**Nonfunctional requirements** — Qualities that describe how well a system should operate rather than which features it provides. They include performance, reliability, scalability, and maintainability, and often involve trade-offs.
+
+**Performance** — How quickly and efficiently a system handles its current workload, commonly measured with response-time distributions and throughput.
+
+**Scalability** — How performance and cost change as a particular load parameter grows. A system is not simply “scalable”; it may scale well for reads but poorly for writes, large records, or extreme users.
+
+**Reliability** — The ability to continue providing the required service even when faults or unexpected conditions occur.
+
+**Maintainability** — How easy the system is to operate, understand, and change over its lifetime. Its three useful dimensions are:
+
+- **Operability:** making routine operation and incident response easy and predictable.
+- **Simplicity:** minimizing unnecessary complexity so engineers can understand and reason about the system.
+- **Evolvability:** making safe, reversible changes as requirements evolve.
+
+### Fetching and precomputing data
+
+**Polling** — Repeatedly asking whether new data or a state change is available. It is simple, but frequent polling wastes resources while infrequent polling increases delay.
+
+**Materialization** — Computing and storing a result ahead of time so later reads are faster, at the cost of additional write work, storage, and update complexity.
+
+**Materialized view** — A stored result derived from other data, such as a precomputed home timeline. Unlike a normal view computed at read time, it must be refreshed when its source data changes.
+
+**Fan-out** — One event causing work for many downstream recipients or operations. Writing a celebrity's post into millions of follower timelines is fan-out on write; fetching many sources when a user opens the feed is fan-out on read.
+
+### Measuring performance
+
+**Response time** — The total time from sending a request until receiving its response, including service time plus queueing, network, and scheduling delays.
+
+**Service time** — The time a request spends actively being processed. A short service time can still produce a long response time if the request waits in a queue.
+
+**Throughput** — The amount of work completed per unit of time, such as requests per second or gigabytes processed per hour.
+
+**Head-of-line blocking** — A slow item at the front of a queue delays faster items behind it, increasing their response times even when they require little work.
+
+**Tail latency (tail latencies)** — The unusually slow end of a response-time distribution, often described by high percentiles such as p95 or p99. It matters because a small fraction of very slow requests can still affect many users.
+
+**Tail latency amplification** — When one user request depends on many backend calls, the chance that at least one call is slow increases. Since the overall request waits for the slowest dependency, its tail can be worse than each backend's tail.
+
+**Service level objective (SLO)** — A measurable reliability or performance target, such as “99.9% of valid requests succeed” or “p99 response time stays below one second.”
+
+**Service level agreement (SLA)** — A contract describing service commitments and the consequences of missing them. An SLO is the target; an SLA adds a promise to another party and remedies such as service credits.
+
+### Controlling overload and feedback loops
+
+**Retry storm** — Failed or slow requests trigger many retries, which add load to an already struggling service and cause still more failures.
+
+**Metastable failure** — A temporary trigger pushes a system into a degraded state that sustains itself even after the original trigger disappears—for example, a retry backlog that keeps the service overloaded.
+
+**Exponential backoff** — Increasing the delay after each failed retry, usually up to a limit, to reduce pressure on a recovering dependency.
+
+**Jitter** — Random variation added to retry or scheduling delays so many clients do not act simultaneously and create synchronized traffic spikes.
+
+**Token bucket** — A rate-limiting mechanism in which operations consume tokens that refill at a fixed rate. Saved tokens permit bounded bursts while the refill rate limits sustained traffic.
+
+**Load shedding** — Deliberately rejecting or dropping some work when overloaded so the system can preserve useful service for the requests it accepts.
+
+**Backpressure** — A downstream component signals or forces upstream producers to slow down when it cannot keep up, preventing unbounded queues and overload.
+
+### Fault tolerance and operational learning
+
+**Single point of failure (SPOF)** — A component whose failure causes the whole system to fail because no redundancy or fallback can take over.
+
+**Exactly-once semantics** — The intended effect of an operation appears once despite crashes, retries, or duplicate messages. Systems usually achieve this through coordination or deduplication rather than literally executing the operation only once.
+
+**Fault injection** — Deliberately causing a specific fault, such as killing a process or adding network delay, to verify that recovery mechanisms work.
+
+**Chaos engineering** — A broader experimental discipline that uses controlled failures and observations to build confidence in system resilience. Fault injection is one technique within it.
+
+**Sociotechnical system** — The combined system of software, infrastructure, people, procedures, incentives, and organizational decisions. Incidents usually emerge from interactions across this whole system rather than from one person's isolated mistake.
+
+### Scaling and decomposition
+
+**Scaling up (vertical scaling)** — Giving one machine more CPU, memory, or storage. It is operationally simple but eventually reaches hardware and price-performance limits.
+
+**Scaling out (horizontal scaling)** — Adding more independent machines and distributing work among them. It offers greater capacity and fault tolerance but introduces coordination, partitioning, and distributed-system complexity.
+
+**Sharding** — Splitting a dataset into partitions and assigning them to different nodes. It enables scaling out, but shard selection, rebalancing, skew, and cross-shard operations become design concerns.
+
+**Microservices** — Dividing an application into independently deployable services around clear responsibilities. This can support independent scaling and change, but too many or poorly chosen boundaries increase operational and network complexity.
+
+**Serverless** — Running code or managed services without directly provisioning servers, often with automatic scaling and usage-based billing. It reduces some operational work but brings platform limits, variable latency, and provider dependence.
 
 ## Review
 
