@@ -12,6 +12,8 @@ description: Prepare a concise, spoiler-light preview of a chapter in /workspace
 3. Treat the local chapter as authoritative. Do not browse unless the user explicitly requests outside context.
 4. Produce a spoiler-light orientation rather than a substitute for reading.
 5. Write the result to `/workspaces/ddia/notes/chN.md`, creating `notes/` when needed.
+6. Treat `## Concepts` as learner-owned. On first creation, include only the empty
+   heading. On later runs, preserve everything beneath it exactly.
 
 ## Note Format
 
@@ -52,6 +54,11 @@ Create this Markdown structure:
 Fill only `Before reading`. Give 2–4 sentences for why the chapter matters, a 3–6-step mental map, 4–8 terms to notice, 2–4 important distinctions, genuine prerequisites, and a reading strategy. End with one unanswered diagnostic question followed by an empty `#### My answer` subsection. Leave the other sections as editable scaffolding.
 
 If the note already exists, update only generated text in `Before reading`. Preserve the learner's diagnostic answer and all other user-written text exactly. Never replace text under `#### My answer`; if it is populated, retain the question associated with it unless the user explicitly requests a new one. Report the clickable note path after writing.
+
+The generated `Terms to notice` list is part of the preview only. Never copy those
+terms—or any concepts inferred from the chapter—into `## Concepts`. Do not put
+instructions, examples, comments, bullets, or placeholders beneath that heading.
+The learner will populate it while reading and request explanations later.
 
 ## Guardrails
 

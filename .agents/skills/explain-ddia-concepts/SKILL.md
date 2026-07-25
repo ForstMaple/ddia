@@ -8,13 +8,18 @@ description: Explain key concepts and terminology that a learner records while r
 ## Workflow
 
 1. Resolve the requested chapter to `/workspaces/ddia/content/en/chN.md` and its note to `/workspaces/ddia/notes/chN.md`. If the chapter cannot be inferred, ask which chapter.
-2. Read the learner's entries under `## Concepts`. If the section is empty, tell the user to add the terms or concepts they want explained; do not invent a list.
-3. Read the relevant chapter passages for context. Use standard technical knowledge when it makes an explanation clearer or more useful; explanations do not need to mirror the book. Do not browse unless the user explicitly requests outside context.
-4. Explain every populated concept unless the user selects a subset.
-5. Reorganize `## Concepts` when useful: group clearly related concepts, merge duplicates, and choose a logical learning order. Keep useful alternate names in parentheses so the learner's terminology is not lost. Do not force unrelated concepts into a group.
-6. Keep all concept entries and explanations in the single `## Concepts` section; do not create a `## Concept explanations` section.
-7. Preserve personal annotations, questions, examples, starred terms, and uncertainty markers while reorganizing. Preserve all content outside `## Concepts` exactly.
-8. Report the clickable note path after writing.
+2. Read only the learner's existing entries under `## Concepts`. Treat those
+   entries—not chapter headings, focus questions, or generated preview terms—as
+   the complete request unless the user explicitly names additional concepts.
+3. If `## Concepts` is missing or empty, do not modify the note. Tell the user to
+   record the terms or concepts there while reading and ask again afterward.
+   Never invent, extract, recommend, or prefill a concept list.
+4. Read the relevant chapter passages for context. Use standard technical knowledge when it makes an explanation clearer or more useful; explanations do not need to mirror the book. Do not browse unless the user explicitly requests outside context.
+5. Explain every populated concept unless the user selects a subset.
+6. Reorganize `## Concepts` when useful: group clearly related concepts, merge duplicates, and choose a logical learning order. Keep useful alternate names in parentheses so the learner's terminology is not lost. Do not force unrelated concepts into a group.
+7. Keep all concept entries and explanations in the single `## Concepts` section; do not create a `## Concept explanations` section.
+8. Preserve personal annotations, questions, examples, starred terms, and uncertainty markers while reorganizing. Preserve all content outside `## Concepts` exactly.
+9. Report the clickable note path after writing.
 
 ## Explanation Format
 
@@ -37,6 +42,10 @@ The skill may rewrite and restructure generated material inside `## Concepts`, i
 If a legacy note contains `## Concept explanations`, move only clearly generated explanations beneath their matching entries in `## Concepts`, then remove the legacy heading if it is empty. Do not move or remove text whose authorship or matching concept is uncertain.
 
 If a concept entry is ambiguous, use the most likely chapter-specific meaning and briefly label the assumption. Ask a concise question only when choosing the wrong meaning would materially change the explanation.
+
+Do not add a concept merely because it is useful, important, related, mentioned in
+the chapter, or needed to complete a group. Explain only learner-recorded concepts
+and concepts explicitly requested in the current prompt.
 
 ## Guardrails
 

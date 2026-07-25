@@ -13,6 +13,8 @@ description: Generate high-value active-reading and comprehension questions from
 4. Do not include answers unless the user explicitly asks for them.
 5. Write the questions to `/workspaces/ddia/notes/chN.md`, creating the file and `notes/` when needed.
 6. Include a closed-book recall checkpoint for the learner to complete immediately after reading and before consulting the chapter or requesting review.
+7. Treat `## Concepts` as learner-owned. If creating the note, include only the
+   empty heading. If the note exists, preserve the section exactly.
 
 ## Default Question Set
 
@@ -49,6 +51,11 @@ Under `## Closed-book recall`, add these editable prompts:
 Add one sentence instructing the learner to close the chapter before answering. Do not supply sample answers.
 
 If the note already exists, replace only generated focus questions with untouched blank answer areas and untouched recall prompts. Never alter an answer the user has started, or any other user-written text. Treat all text under a question's `#### My answer` heading, up to the next third-level heading or second-level section, as the learner's answer. If preserving an answer makes question replacement or numbering ambiguous, retain that question and its number, then append new questions. Remove an obsolete `## My answers` section only when it contains no learner text. Report the clickable note path after writing.
+
+Never derive or suggest entries for `## Concepts`, even when a question names an
+important term. Do not put instructions, examples, comments, bullets, or
+placeholders beneath that heading. The learner will record concepts while reading
+and request explanations separately.
 
 ## Adaptation
 
