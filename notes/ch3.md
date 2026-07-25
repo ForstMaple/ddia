@@ -53,56 +53,98 @@ Answer in your own words; uncertainty is useful—mark anything you’re unsure 
 ### 1. ★ **[Introduction]** Why is choosing a data model more than a storage decision? Explain how it affects both the questions an application can express easily and the way developers frame the problem.
 
 #### My answer
+Choosing a data model is important because it has a profound effect on how the software is designed and written and on how we think about the problem we are solving.
 
+- A data model determines how information and relationships are stored. Therefore, it makes a certain type of queries faster and easier. For example, a document data model specializes in stroging and retrieving a complete nested records, a relational data model support storing highly structured data and querying them by joins, and graph models support well the information on different entities and their relationships, using nodes and links.
+- Usually the same data can be represented in different data models. It is up to the developers to decided based on what kind of problems they are solving and what functionalities the application should support.
 
 ### 2. **[Introduction — Declarative Query Languages]** Contrast a declarative query with a hand-written imperative algorithm. Why can the same declarative query benefit from a later database-engine improvement without application changes?
 
 #### My answer
-
+In a declarative query, the user just specifies how they want the data without caring about how the database executes it. The abstraction allows the database engine to choose the most efficient way to execute the query, as long as the final format is what the user desired.
+Even if there are improvements in the query engine, there is no need to adjsut the original query, provided that the resposne format remains the same.
 
 ### 3. ★ **[The Object-Relational Mismatch / When to Use Which Model]** A user profile contains a small, bounded set of addresses, education entries, and preferences that are almost always fetched together. Why might a document representation fit well? What change to the access pattern or relationships would make a relational design more attractive?
 
 #### My answer
-
+A document datamodel has good locality. It stores all the relevant in one place, so it suits the said purposes well since the informaiton is always retrieved together. By contrast, many joins are needed to gather all the information needed in a relational database.
+The relational datamodel may be more attractive in several cases:
+a. When only a small subset of data are accessed each time
+b. If the data are frequently written or updated, and ACID principles are required
+c. When the table and the number of records grow too big, but the data stored in the table are homogeneous. It can be a good idea to use a relational data model to introduce normalization and separate the data into different tables.
 
 ### 4. ★ **[Normalization, Denormalization, and Joins]** A company name and logo appear on millions of user profiles but occasionally change. Compare storing copies on each profile with storing one organization record referenced by ID. Trace the read, write, consistency, and storage consequences.
 
 #### My answer
 
+- Read: Since the name and logo appear in millions of user profiles, we can assume they are read very frequently as the user profiles are accessed. Using denormalizaiton can make such information self-contained and easily retrieved, while normalization will incur addtional cost and overhead to perform a join to get the information.
+- Write: The name and logo are updated occasionally. While the write operation may not be often, we need to do so for millions of users. Normalization enables us to only update at one place - where the entity is stored, but for denomalization, we will have to find the fields to update for the millions of users, which can be very expensive and inefficient.
+- Consistency: Similar to that mentioned in "Write", normalization yields good consistency since we only need to update at one place, whereas we can easily miss out some records to update if using denormalization and have to consider cases where the update fails halfway.
+- Storage Consequence: Normalization provides very good storage efficiency since we only store one entity and reference it by ids in all the user profiles; denomalization can cause waste of storage since we need to store the relevant information in each relevant profile.
 
 ### 5. **[Many-to-One and Many-to-Many Relationships]** A platform must answer both “which organizations has this person worked for?” and “which people worked for this organization?” How would a normalized relational design represent this relationship, and why is copying references on both sides risky?
 
 #### My answer
+A normalized design would represent this relationship in a so-called "associative table" or "join table". Each row associate one id with another - one person id with an organization id in this given case.
+A major risk of copying the references on both sides is inconsisteny, as the references must be updated on both sides - the person as well as the organization.
 
 
 ### 6. **[Stars and Snowflakes: Schemas for Analytics]** For a retailer’s historical sales analysis, distinguish a fact table from dimension tables. Why might analysts prefer a star schema to a more normalized snowflake schema, and when can denormalization be relatively safe here?
 
 #### My answer
+In this case, one row in the fact table is likely to represent one transaction with other information of the transaction (attributes). The dimension tables stores other information that is referenced in the fact able by foreign keys, maybe details of the products, persons handling the transactions, informaiton on the transaction date, etc.
+Star schema is usually prefered to the snowflake schema because it is simpler and more intuitive, as the snowflake schema further breaks down a dimension into subdimensions.
+Denormalization is relatively safe if the historical data are not updated once generated, except for error corrections.
 
 
 ### 7. ★ **[Graph-Like Data Models]** You are building a fraud-investigation tool that must find several-hop links among people, devices, accounts, and transactions. Why is a graph model a natural fit, and what must a query language express to support this task well?
 
 #### My answer
+The fraud-investigation is designed to discover suspicious patterns, like unusual connection between different entities. In nature, therefore, we would be expecting a lot of many-to-many relationships. That is what the graph model is good at, and the graph model can still handle these relationships well as they grow more complex.
+In a graph query, you may need to traverse a variable number of edges to find the vertex you are looking for. In other words, the number of joins to perform cannot be determined in advance. This makes graph queries hard for the common SQL query languages. Hence, the graph query languages are expected to be optimized for such use cases.
 
 
 ### 8. ★ **[Event Sourcing and CQRS]** A conference system records registrations, cancellations, and room-capacity changes. Explain the respective roles of commands, immutable events, and materialized read models. Why must rebuilding a view be deterministic and process events in log order?
 
 #### My answer
+Command: the request made by the user. It will be validated once it comes in. If valid, it will result a new immutable event in the logs. In this case, it is the requests made by the user in the concerence system.
+Immutable events: a recorded fact happening in the past than cannot be changed. In this case, it is the details of the validated user requests.
+Materialized read models: a pre-computed, read-only cache or database table designed specifically to satisfy application queries. In this case, it is the derived read-only tables, dashboards, etc., from the event logs for the reference of the system manager and users.
+Rebuilding a view has to be deterministic and following the event log order:
+a. Ensure the data consistency: we can always produce the same view in case any data loss
+b. Avoid possible errors: for example, a cancellation can only happen after a booking. 
 
 
 ### 9. **[Event Sourcing and CQRS]** Identify one advantage and one danger of replaying an event log. How would external exchange rates, personal-data deletion, or sending emails make replay more difficult?
 
 #### My answer
 
+- Advantage: it may make it easier to fix a bug or recover the system from some errors
+- Unexpected side effects: like getting inconsistent external data, resending duplicated emails to the users, etc.
+
+- External exchange rates: requesting an external API may not be idempotent - we will get different exchange rates unless we take into account the timestamp when the event happens.
+- Personal-data deletion: given the immutability of the events, it will be hard to erase a user's data without compromising the state, especially when one event involves a couple of users.
+- Sending emails: replaying the event log can lead to a duplicated email sent to the user, which can cause confusion to the users.
+
 
 ### 10. **[Dataframes, Matrices, and Arrays]** A data scientist turns a table of user–movie ratings into a sparse user-by-movie matrix for a recommendation model. Why is this transformation useful, and how does dataframe-style data manipulation differ from writing a declarative SQL query?
 
 #### My answer
+The transformation into the sparse user-by-movie matrix is useful because most of the fields in the matrix will be empty - one user often only watches a handful movies, while one movie is also only watched by a number of users. Using a sparse matrix can save the space for storage and improve the efficiency of calculation.
+Differences between dataframe-style manipulation and a declarative SQL query:
 
+- The purposes are different. DataFrame manipulation is usually used by the data scientists to transform the data into a format that is convenient for them to conduct analysis or training. However, SQL query, even if updating the data, must conform with the schema, and it is usually used to retrieve data in a predefined format.
+- DataFrame manipulation tends to support more complex and customized operations.
 
 ### 11. **[Summary — synthesis]** Design a data system for a professional-network product with profiles, employer relationships, multi-hop “people you may know” exploration, operational screens, and offline recommendation training. Which models or derived representations would you use for each need, and what would make your choices stop applying?
 
 #### My answer
+
+- **Profiles:** Store bounded, mostly self-contained profile content as documents when profiles are normally loaded as a whole. This stops fitting if profile components need frequent independent updates or acquire many relationships to shared entities.
+- **Employer relationships:** Keep employers, people, and employment records in a normalized relational model because many people can work for many employers and shared employer details should be updated once. If relationship traversal becomes the dominant workload, also derive a graph representation.
+- **“People you may know”:** Build a derived property graph from connection, employment, education, and other relationship data so multi-hop paths are natural to query. A graph is unnecessary if recommendations use only a few fixed joins or simple numerical features.
+- **Operational screens:** Build relational, document, or denormalized materialized views shaped around each screen's queries. Event sourcing and CQRS may produce these views when audit history and complex state transitions justify the additional replay and consistency complexity; otherwise direct transactional updates are simpler.
+- **Offline recommendation training:** Export authoritative data into dataframes for cleaning and feature preparation, then into sparse matrices or arrays when the algorithm requires numerical input. This choice stops applying if the model needs another specialized representation, such as graph embeddings or text/vector features.
 
 
 ## Closed-book recall
