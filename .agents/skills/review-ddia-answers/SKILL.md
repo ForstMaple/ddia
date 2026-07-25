@@ -12,10 +12,11 @@ description: Review a learner's answers to questions about chapters in /workspac
 3. Evaluate conceptual accuracy, reasoning, important omissions, and whether the answer respects the conditions and trade-offs in the chapter.
 4. Preserve the learner's voice. Do not replace a basically sound answer merely to make it resemble the book.
 5. Read answers from `/workspaces/ddia/notes/chN.md` unless the user supplies them elsewhere.
-6. Review populated inline `#### My answer` subsections under `## Focus questions` and the `## Closed-book recall` section. Support legacy notes that still store responses under `## My answers`.
+6. Review populated inline `#### My answer` or `#### My answer (revised)` subsections under `## Focus questions` and the `## Closed-book recall` section. Support legacy notes that still store responses under `## My answers`.
 7. Read `## Concepts` when populated and use the learner's terminology notes as supporting evidence, but leave concept explanations to the concept-explanation skill unless the user asks for them as part of the review.
 8. Write a `#### Review` subsection immediately after each reviewed answer, so the feedback remains adjacent to its question and answer. Use `## Review` only for chapter-wide feedback, then add a tailored scenario under `## Application challenge` and a schedule under `## Spaced review`.
-9. Preserve the questions, answers, recall, concepts, and all other user-written text exactly.
+9. After reviewing an answer headed `#### My answer`, rename that heading to `#### My answer (revised)`. Keep the existing answer text in the same subsection for the learner to revise in place; do not create another answer subsection or move, copy, clear, or replace its content. Leave an existing `#### My answer (revised)` heading unchanged.
+10. Preserve the questions, answer content, recall, concepts, and all other user-written text exactly; the heading rename in step 9 is the only automatic change to learner-authored structure.
 
 ## Feedback Format
 
