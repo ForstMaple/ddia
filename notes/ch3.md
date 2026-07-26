@@ -53,9 +53,10 @@ Answer in your own words; uncertainty is useful—mark anything you’re unsure 
 ### 1. ★ **[Introduction]** Why is choosing a data model more than a storage decision? Explain how it affects both the questions an application can express easily and the way developers frame the problem.
 
 #### My answer
+
 Choosing a data model is important because it has a profound effect on how the software is designed and written and on how we think about the problem we are solving.
 
-- A data model determines how information and relationships are stored. Therefore, it makes a certain type of queries faster and easier and determines which relationships and operations are natural or awkward to express, even before performance is considered.'
+- A data model determines how information and relationships are stored. Therefore, it makes a certain type of queries faster and easier and determines which relationships and operations are natural or awkward to express, even before performance is considered.
   - For example, a document data model specializes in stroging and retrieving a complete nested records, a relational data model support storing highly structured data and querying them by joins, and graph models support well the information on different entities and their relationships, using nodes and links.
 - Usually the same data can be represented in different data models. It is up to the developers to decided based on what kind of problems they are solving and what functionalities the application should support.
 
@@ -68,6 +69,7 @@ Choosing a data model is important because it has a profound effect on how the s
 ### 2. **[Introduction — Declarative Query Languages]** Contrast a declarative query with a hand-written imperative algorithm. Why can the same declarative query benefit from a later database-engine improvement without application changes?
 
 #### My answer
+
 In a declarative query, the user just specifies how they want the data without caring about how the database executes it. The abstraction allows the database engine to choose the most efficient way to execute the query, as long as the final format is what the user desired.
 Even if there are improvements in the query engine, there is no need to adjsut the original query, provided that the resposne format remains the same.
 
@@ -80,6 +82,7 @@ Even if there are improvements in the query engine, there is no need to adjsut t
 ### 3. ★ **[The Object-Relational Mismatch / When to Use Which Model]** A user profile contains a small, bounded set of addresses, education entries, and preferences that are almost always fetched together. Why might a document representation fit well? What change to the access pattern or relationships would make a relational design more attractive?
 
 #### My answer
+
 A document datamodel has good locality. It stores all the relevant in one place, so it suits the said purposes well since the informaiton is always retrieved together. By contrast, many joins are needed to gather all the information needed in a relational database.
 A document fits because the profile is a bounded one-to-many tree that is normally read as a whole, giving a natural object mapping and good locality. Relational tables become more attractive if components need independent identity or updates, only small portions are usually fetched, or education/employer/address data become shared many-to-one or many-to-many relationships queried in both directions.
 
@@ -108,6 +111,7 @@ A document fits because the profile is a bounded one-to-many tree that is normal
 ### 5. **[Many-to-One and Many-to-Many Relationships]** A platform must answer both “which organizations has this person worked for?” and “which people worked for this organization?” How would a normalized relational design represent this relationship, and why is copying references on both sides risky?
 
 #### My answer
+
 A normalized design would represent this relationship in a so-called "associative table" or "join table". Each row associate one id with another - one person id with an organization id in this given case.
 A major risk of copying the references on both sides is inconsisteny, as the references must be updated on both sides - the person as well as the organization.
 
@@ -120,6 +124,7 @@ A major risk of copying the references on both sides is inconsisteny, as the ref
 ### 6. **[Stars and Snowflakes: Schemas for Analytics]** For a retailer’s historical sales analysis, distinguish a fact table from dimension tables. Why might analysts prefer a star schema to a more normalized snowflake schema, and when can denormalization be relatively safe here?
 
 #### My answer
+
 In this case, one row in the fact table is likely to represent one transaction with other information of the transaction (attributes). The dimension tables stores other information that is referenced in the fact able by foreign keys, maybe details of the products, persons handling the transactions, informaiton on the transaction date, etc.
 Star schema is usually prefered to the snowflake schema because it is simpler and more intuitive, as the snowflake schema further breaks down a dimension into subdimensions.
 Denormalization is relatively safe if the historical data are not updated once generated, except for error corrections.
@@ -133,6 +138,7 @@ Denormalization is relatively safe if the historical data are not updated once g
 ### 7. ★ **[Graph-Like Data Models]** You are building a fraud-investigation tool that must find several-hop links among people, devices, accounts, and transactions. Why is a graph model a natural fit, and what must a query language express to support this task well?
 
 #### My answer
+
 A graph naturally represents people, devices, accounts, and transactions as typed vertices connected by typed, property-bearing edges. Its query language must match relationship direction and labels, filter properties, and express multi-hop or variable-length paths so an investigator can ask for suspicious connection patterns without fixing the number of hops in advance.
 
 #### Review
@@ -142,23 +148,22 @@ A graph naturally represents people, devices, accounts, and transactions as type
 - **Clarification:** The query language should declaratively match vertex and edge types, directions, properties, and path patterns, including bounded or arbitrary-length paths. SQL can express recursion with `WITH RECURSIVE`; graph languages mainly make such patterns more direct and concise.
 - **Stronger answer:** A graph naturally represents people, devices, accounts, and transactions as typed vertices connected by typed, property-bearing edges. Its query language must match relationship direction and labels, filter properties, and express multi-hop or variable-length paths so an investigator can ask for suspicious connection patterns without fixing the number of hops in advance.
 
-
 ### 8. ★ **[Event Sourcing and CQRS]** A conference system records registrations, cancellations, and room-capacity changes. Explain the respective roles of commands, immutable events, and materialized read models. Why must rebuilding a view be deterministic and process events in log order?
 
 #### My answer
+
 Command: the request made by the user. It will be validated once it comes in. If valid, it will result a new immutable event in the logs. In this case, it is the requests made by the user in the concerence system.
-Immutable events: an event that records the resulting past-tense fact. In this case, it is the details of the validated user requests.
+Immutable events: an event that records the result as a past-tense fact. In this case, it is the details of the validated user requests.
 Materialized read models: a pre-computed, read-only cache or database table designed specifically to satisfy application queries. In this case, it is the derived read-only tables, dashboards, etc., from the event logs for the reference of the system manager and users.
 Rebuilding a view has to be deterministic and following the event log order:
 a. Ensure the data consistency: we can always produce the same view in case any data loss
-b. Avoid possible errors: for example, a cancellation can only happen after a booking. 
+b. Avoid possible errors: for example, a cancellation can only happen after a booking
 
 #### Review
 
 - **Assessment:** Solid
 - **What works:** You distinguish a rejectable command, an accepted fact recorded as an immutable event, and query-specific state derived from events. You also correctly connect determinism to reproducibility and ordering to valid state transitions.
 - **Clarification:** An event records the resulting past-tense fact, not merely the request details: for example, `SeatsBooked` rather than `BookSeatsRequested`. With the same events, order, and projection code, rebuilding must produce the same state.
-
 
 ### 9. **[Event Sourcing and CQRS]** Identify one advantage and one danger of replaying an event log. How would external exchange rates, personal-data deletion, or sending emails make replay more difficult?
 
@@ -176,6 +181,7 @@ Replay lets us rebuild or add views and rerun corrected projection code. Its dan
 ### 10. **[Dataframes, Matrices, and Arrays]** A data scientist turns a table of user–movie ratings into a sparse user-by-movie matrix for a recommendation model. Why is this transformation useful, and how does dataframe-style data manipulation differ from writing a declarative SQL query?
 
 #### My answer
+
 The sparse matrix stores only observed ratings and exposes the numerical user–movie structure needed by linear-algebra-based recommendation methods. SQL declaratively states the result to compute; dataframe APIs typically apply a sequence of interactive transformations, merges, pivots, and custom functions as the scientist incrementally reshapes a working copy of the data.
 
 #### Review
@@ -200,7 +206,6 @@ The sparse matrix stores only observed ratings and exposes the numerical user–
 - **Assessment:** Solid
 - **What works:** You choose models from relationship shape and access pattern rather than by product label, distinguish authoritative normalized facts from several derived forms, and state concrete conditions that would invalidate each choice.
 - **Clarification:** Make the source-of-truth boundary explicit for operational screens: document/relational transactional state can be authoritative, while denormalized screen-shaped views should be treated as derived and rebuildable. Event sourcing is a separate choice about making the event log authoritative, not a requirement for CQRS-style read views.
-
 
 ## Closed-book recall
 
@@ -231,6 +236,8 @@ Close the chapter before answering these prompts.
 **Relational database** — A database based on relations: unordered collections represented in SQL as tables of rows and columns. Relationships are usually represented with keys and reconstructed with joins, which makes the model particularly effective for structured data and many-to-one or many-to-many relationships.
 
 **Document model** — A model that stores a record and its nested one-to-many data together, commonly as JSON. It fits data that forms a self-contained tree and is usually read as a unit, but references and many-to-many relationships can become awkward when the database has weak join support.
+
+**Bounded document** — A document whose contents have a natural, practical limit and belong to one root entity. An order with its line items is usually bounded; a user with every post or follower embedded inside is potentially unbounded. Bounded does not mean fixed-size—it means growth is predictable enough that loading, rewriting, and storing the document as one unit remains safe.
 
 **Impedance mismatch** — The structural mismatch between application objects and relational tables. A nested application object may need to be split across several tables when stored and then reconstructed when read.
 
