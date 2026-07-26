@@ -30,8 +30,6 @@ Create this Markdown structure:
 ### Watch for
 ### Useful prior knowledge
 ### Reading strategy
-### Diagnostic question
-#### My answer
 
 ## Focus questions
 
@@ -51,9 +49,9 @@ Create this Markdown structure:
 ## Spaced review
 ```
 
-Fill only `Before reading`. Give 2–4 sentences for why the chapter matters, a 3–6-step mental map, 4–8 terms to notice, 2–4 important distinctions, genuine prerequisites, and a reading strategy. End with one unanswered diagnostic question followed by an empty `#### My answer` subsection. Leave the other sections as editable scaffolding.
+Fill only `Before reading`. Give 2–4 sentences for why the chapter matters, a 3–6-step mental map, 4–8 terms to notice, 2–4 important distinctions, genuine prerequisites, and a reading strategy. Leave the other sections as editable scaffolding. Do not create a diagnostic question or a diagnostic answer subsection.
 
-If the note already exists, update only generated text in `Before reading`. Preserve the learner's diagnostic answer and all other user-written text exactly. Never replace text under `#### My answer`; if it is populated, retain the question associated with it unless the user explicitly requests a new one. Report the clickable note path after writing.
+If the note already exists, update only generated text in `Before reading` and preserve all user-written text exactly. Remove a legacy `### Diagnostic question` block only when its `#### My answer` subsection contains no learner text; otherwise preserve the entire block exactly. Report the clickable note path after writing.
 
 The generated `Terms to notice` list is part of the preview only. Never copy those
 terms—or any concepts inferred from the chapter—into `## Concepts`. Do not put

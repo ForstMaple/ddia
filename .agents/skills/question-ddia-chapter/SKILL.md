@@ -52,6 +52,8 @@ Add one sentence instructing the learner to close the chapter before answering. 
 
 If the note already exists, replace only generated focus questions with untouched blank answer areas and untouched recall prompts. Never alter an answer the user has started, or any other user-written text. Treat all text under a question's `#### My answer` heading, up to the next third-level heading or second-level section, as the learner's answer. If preserving an answer makes question replacement or numbering ambiguous, retain that question and its number, then append new questions. Remove an obsolete `## My answers` section only when it contains no learner text. Report the clickable note path after writing.
 
+Do not create a `### Diagnostic question` block. Remove a legacy diagnostic question block only when its `#### My answer` subsection contains no learner text; otherwise preserve the entire block exactly.
+
 Never derive or suggest entries for `## Concepts`, even when a question names an
 important term. Do not put instructions, examples, comments, bullets, or
 placeholders beneath that heading. The learner will record concepts while reading
