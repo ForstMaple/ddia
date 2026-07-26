@@ -58,8 +58,8 @@ Answer in your own words; uncertainty is useful—mark anything you’re unsure 
 
 ### 1. ★ **[Case Study: Social Network Home Timelines]** What workload makes computing a home timeline on every read expensive, and which parts of that workload would you measure before choosing another design?
 
-
 #### My answer (revised)
+
 This method is called polling. It is expensive because we need to fetch the posts from all those they follow. Even though users may not follow a lot of users on average, there are still a lot of requests to make given the huge number of users using the platform.
 Before choosing another design, it is important to measure polling interval and online-user count, post rate, the distribution of followees (especially extremes).
 
@@ -67,10 +67,10 @@ Before choosing another design, it is important to measure polling interval and 
 
 **Assessment:** Mostly right. You identify polling and the expensive fan-in query. Also measure polling interval and online-user count, post rate, the distribution of followees (especially extremes), and posts per followee; overlap is less directly important to one timeline query. See [Representing Users, Posts, and Follows](/workspaces/ddia/content/en/ch2.md:58).
 
-
 ### 2. **[Materializing and Updating Timelines]** Predict how materializing timelines changes the location and timing of work. Under what user or traffic patterns might that trade-off become unattractive?
 
 #### My answer (revised)
+
 Materializing kicks in when one user makes a post. It will add this new post in the view cached for their followers. Then, when their followers log in or referesh, the posts will be loaded for them from cache.
 It becomes unattractive in certain extreme cases. For example:
 a) If one user follows a huge number of accounts, most of which also post a lot, we will need to add a lot of posts to their materialized view, but it's not likely for them to read all of them.
@@ -80,10 +80,10 @@ b) If one user is followed by a huge number of users, we will have to update the
 
 **Assessment:** Solid. You accurately move work from reads to writes and identify both pathological cases. For celebrities, a hybrid often helps: merge their posts at read time instead of fanning them out to every timeline.
 
-
 ### 3. ★ **[Describing Performance]** Why must performance be described using both throughput and a distribution of response times rather than one “speed” number?
 
 #### My answer (revised)
+
 Throughput describes capacity/work per second; response-time percentiles describe user experience. A distribution summarizes many requests rather than showing each individual user, and exposes the tail an average hides.
 
 #### Review
@@ -94,6 +94,7 @@ Throughput describes capacity/work per second; response-time percentiles describ
 ### 4. **[Latency and Response Time / Average, Median, and Percentiles]** Reconstruct the relationship among service time, queueing delay, network latency, and client-observed response time. Why can a request with little processing still be slow?
 
 #### My answer (revised)
+
 Client-observed response time consists of service time, queue delay, and network latency. A request with little processing may have a short "service time", but it can be slow because there are many requests in the queue or the internet connection is slow.
 
 #### Review
@@ -103,6 +104,7 @@ Client-observed response time consists of service time, queue delay, and network
 ### 5. ★ **[Use of Response Time Metrics]** A page makes many backend calls in parallel. Explain why acceptable p99 latency for each backend may still produce poor end-user latency, and identify what you would measure
 
 #### My answer (revised)
+
 If the page makes many backend calls in parallel, it may have to wait until all the responses are in place. If any single service takes too long to respond, it will slow down the whole request.
 This is *tail-latency amplification*. We can measure end-to-end page percentiles, per-backend percentiles, number of dependencies, and timeouts/errors.
 
@@ -112,8 +114,8 @@ This is *tail-latency amplification*. We can measure end-to-end page percentiles
 
 ### 6. ★ **[Reliability and Fault Tolerance]** Explain the difference between a fault and a failure using one component at two different system boundaries. What does that imply about the meaning of “fault-tolerant”?
 
-
 #### My answer (revised)
+
 A fault means part of the system stops working correctly, whereas a failure means the system as a whole stops processing users' requests correctly.
 A failure in a small boundary can only be a fault in a bigger boundary. For example, when a hard drive crashes, it is a failure for itself. However, if other drives in the same cluster can take over its work, it will only be a fault for this hard drive cluster.
 Then, being "fault-tolerent" does not mean nothing breaks. It means in a large scale (maybe the system as a whole) it still meets the service object, even if some parts are faultly.
@@ -125,6 +127,7 @@ Then, being "fault-tolerent" does not mean nothing breaks. It means in a large s
 ### 7. **[Hardware and Software Faults / Humans and Reliability]** Why can redundancy handle some hardware faults more readily than correlated software faults or operational mistakes? What practices would help prevent faults from cascading?
 
 #### My answer (revised)
+
 Hardware faults are often not correleated, and they often can be fixed by replacing the faulty part.
 Software faults are often correlated. Many nodes can be affected by the same bug, and a systematic failure is usually hard to recover. As for operational mistakes, it's largely because the unpredictibility of humans.
 To prevent faults from cascading, we can add staged rollouts, safe defaults/permissions, monitoring, and backoff/load shedding.
@@ -136,6 +139,7 @@ To prevent faults from cascading, we can add staged rollouts, safe defaults/perm
 ### 8. ★ **[Describing Load]** Choose a familiar service and define the smallest useful set of load parameters for it. How would you test whether doubling one parameter preserves performance at a reasonable resource cost?
 
 #### My answer (revised)
+
 Add concurrency, read/write mix, cache-hit rate, and a response-time SLO when they matter. First double the chosen parameter with fixed resources and observe p50/p99/error rate; then add resources until the same SLO is restored and compare resource/cost increase.
 
 #### Review
@@ -145,6 +149,7 @@ Add concurrency, read/write mix, cache-hit rate, and a response-time SLO when th
 ### 9. **[Shared-Memory, Shared-Disk, and Shared-Nothing Architecture]** A single-node database is nearing its capacity. What evidence would justify scaling up, and what changed requirements would justify accepting the complexity of scaling out?
 
 #### My answer (revised)
+
 It is important to identify the bottleneck and vertical headroom. Evidence includes projected load, SLO breaches, price/performance of a bigger node, and its ceiling.
 Scaling out will introduce more complexity to the service, but we should do so when capacity, elasticity, or fault-domain availability justifies sharding and distributed-system complexity.
 
@@ -155,14 +160,14 @@ Scaling out will introduce more complexity to the service, but we should do so w
 ### 10. **[Maintainability]** Imagine an auto-scaling, self-healing service that operators struggle to understand during incidents. Evaluate it in terms of operability, simplicity, and evolvability, and propose one design change that improves one quality without quietly damaging the others
 
 #### My answer (revised)
+
 Operability: Operability is weak. Although the service can handle routine load changes and failures automatically, operators struggle to understand its behavior during unusual incidents, when human intervention is most important.
 
 Simplicity: Simplicity is also weak. The interactions between auto-scaling, self-healing, and changing system conditions create complexity that is difficult for operators and new engineers to understand. Automation makes routine operation easier, but does not necessarily make the system itself simpler.
 
 Evolvability: Evolvability is uncertain. Handling faults and load changes demonstrates reliability and scalability, not evolvability. Evolvability depends on whether engineers can safely understand, test, and modify the service and its automation policies.
 
-One improvement would be to make the automation observable and controllable. The service should record why it made each scaling or recovery decision, expose the inputs and thresholds involved, and provide a manual override. This improves operability while preserving the benefits of automation. It can also support simplicity and evolvability, provided the added controls remain small,
-clear, and well documented.
+One improvement would be to make the automation observable and controllable. The service should record why it made each scaling or recovery decision, expose the inputs and thresholds involved, and provide a manual override. This improves operability while preserving the benefits of automation. It can also support simplicity and evolvability, provided the added controls remain small, clear, and well documented.
 
 #### Review
 
