@@ -25,9 +25,9 @@ description: Explain and selectively supplement key concepts and terminology in 
    leave the chapter's central mechanism or trade-off materially harder to
    understand, or when it is needed to connect the learner's recorded concepts.
    Use a high bar and add as few concepts as necessary.
-7. Reorganize `## Concepts` when useful: group clearly related concepts, merge duplicates, and choose a logical learning order. Keep useful alternate names in parentheses so the learner's terminology is not lost. Do not force unrelated concepts into a group.
+7. Reorganize `## Concepts` when useful: group clearly related concepts, merge duplicates, and choose a logical learning order. Keep useful alternate names in parentheses so the learner's terminology is not lost. Correct typos directly when confident they are typos; do not preserve the misspelling as an alias or annotation. If the intended term is uncertain, retain the learner's wording. Do not force unrelated concepts into a group.
 8. Keep all concept entries and explanations in the single `## Concepts` section; do not create a `## Concept explanations` section.
-9. Preserve personal annotations, questions, examples, starred terms, and uncertainty markers while reorganizing. Preserve all content outside `## Concepts` exactly.
+9. Preserve personal annotations, questions, examples, starred terms, and uncertainty markers while reorganizing, except for confident typo corrections. Preserve all content outside `## Concepts` exactly.
 10. Re-read the edited note and compare it with the original. Verify that content
     outside `## Concepts` is unchanged, learner-authored material is preserved,
     no concepts or explanations are duplicated, explanations remain concise, and
