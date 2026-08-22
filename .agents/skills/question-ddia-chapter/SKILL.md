@@ -1,6 +1,6 @@
 ---
 name: question-ddia-chapter
-description: Generate high-value active-reading and comprehension questions from chapters in /workspaces/ddia/content/en. Use when the user wants focus questions before or during reading, a chapter quiz, retrieval practice, or help identifying the most important DDIA concepts and trade-offs.
+description: Generate a prioritized core set and optional extension set of high-value active-reading and comprehension questions from chapters in /workspaces/ddia/content/en. Use when the user wants focus questions before or during reading, a chapter quiz, retrieval practice, or help identifying the most important DDIA concepts and trade-offs.
 ---
 
 # Question a DDIA Chapter
@@ -9,7 +9,7 @@ description: Generate high-value active-reading and comprehension questions from
 
 1. Resolve the requested chapter to `/workspaces/ddia/content/en/chN.md`. If no chapter is specified, ask which chapter.
 2. Read the chapter itself, including its summary. Use the local text as authoritative.
-3. Select questions by instructional value, not by easy extraction. Emphasize the chapter's central models, causal reasoning, trade-offs, and boundary conditions.
+3. Select questions by instructional value, not by easy extraction. Emphasize the chapter's central models, causal reasoning, trade-offs, and boundary conditions. Keep questions in the sequence in which their answers are substantively developed in the chapter. Do not move a question earlier because an earlier section briefly mentions, previews, or cross-references the topic.
 4. Do not include answers unless the user explicitly asks for them.
 5. Write the questions to `/workspaces/ddia/notes/chN.md`, creating the file and `notes/` when needed.
 6. Include a closed-book recall checkpoint for the learner to complete immediately after reading and before consulting the chapter or requesting review.
@@ -18,16 +18,29 @@ description: Generate high-value active-reading and comprehension questions from
 
 ## Default Question Set
 
-Create 8–12 questions in reading order:
+Create 8–12 questions in reading order, split into two explicit tiers:
 
-- 2–3 **orienting questions** about the problem being solved and why it matters.
-- 3–5 **explanation questions** requiring the learner to reconstruct a mechanism or distinction.
-- 2–3 **application questions** using a small scenario or design choice.
-- 1 **synthesis question** connecting multiple sections or asking when a claim stops applying.
+- **Core:** 5–7 questions sufficient to recover the chapter's essential mental
+  models. Include orientation, mechanism or distinction, application, and
+  synthesis. Mark the 3–5 highest-priority core questions with `★`.
+- **Extension:** 3–5 optional questions for deeper application, boundary
+  conditions, easily confused ideas, or connections across sections. Do not use
+  extension questions merely to exhaustively cover headings.
 
-Label each question with the relevant chapter section. Mark the 3–5 most important questions with `★`. Keep questions open-ended and answerable from the chapter.
+Label each question with the relevant chapter section. Keep questions open-ended
+and answerable from the chapter. A learner who completes only the core set should
+still have tested the chapter's central argument and trade-offs.
 
-Place this guidance sentence immediately below `## Focus questions`: “Answer in your own words; uncertainty is useful—mark anything you’re unsure about.”
+Assign each question to the section that contains the explanation needed to answer it, not to a section that only points ahead to that explanation. If a question synthesizes multiple sections, place it after the latest section required to answer it and label it with the sections it actually draws from.
+
+Place this guidance sentence immediately below `## Focus questions`: “Answer the
+core questions first in your own words; uncertainty is useful—mark anything
+you’re unsure about. Extension questions are optional.”
+
+Place `**Core questions — answer these first.**` before the first core question
+and `**Extension questions — optional deeper practice.**` before the first
+extension question. Keep question numbering continuous across both tiers. These
+labels are generated text, not learner-authored content.
 
 Then format every question as its own third-level heading, followed immediately by a fourth-level answer heading and blank editable space:
 
@@ -58,6 +71,12 @@ Never derive or suggest entries for `## Concepts`, even when a question names an
 important term. Do not put instructions, examples, comments, bullets, or
 placeholders beneath that heading. The learner will record concepts while reading
 and request explanations separately.
+
+Before writing, re-read every generated question against the relevant chapter
+section. Remove stray citation or footnote numbers, repair grammar, verify section
+labels and reading order, split unrelated compound tasks, and ensure the wording
+does not reveal the answer. Perform this check again after merging with an
+existing note.
 
 ## Adaptation
 

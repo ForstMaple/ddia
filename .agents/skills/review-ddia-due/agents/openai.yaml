@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Due DDIA Material"
+  short_description: "Run adaptive reviews when checkpoints are due"
+  default_prompt: "Use $review-ddia-due to quiz me on the DDIA material that is due for review."

@@ -1,4 +1,4 @@
 interface:
   display_name: "Review DDIA Answers"
-  short_description: "Review answers and clarify key concepts"
-  default_prompt: "Use $review-ddia-answers to review my answers about chapter 1."
+  short_description: "Review answers through guided revision"
+  default_prompt: "Use $review-ddia-answers to review my chapter 1 answers and guide any needed revisions."
