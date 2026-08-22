@@ -48,53 +48,112 @@ Answer in your own words; uncertainty is useful—mark anything you’re unsure 
 
 #### My answer
 
+Append-only file is fast for writes because it is just writing a new record at the end of the file instead of overwriting a value. It is slow for reads because we need to scan the whole file to find the latest occurrence of a key.
+An index will incur additional space to store them. There will be computation resources used when we update the index when new data come in.
 
 ### 2. **[Log-Structured Storage]** Which limitations of an in-memory hash index motivate storing records sorted by key in SSTables?
 
 #### My answer
+
+- In-memory hash index is not persistent. It will be lost when we restart the database.
+- It requires a lot of random IO.
+- Memory is expensive to scale as the data grow.
+- We need complicated logic to avoid hash collisions.
+- It does not support range queries very well.
 
 
 ### 3. ★ **[Constructing and merging SSTables]** Reconstruct the lifecycle of a write in an LSM storage engine, from arrival through memtable persistence and later compaction.
 
 #### My answer
 
+- When a new write comes in, it will be stored in an in-memory ordered map (red-black tree, skip list, trie, etc.). Such data structure supports fast insertions and lookups, and it can be read back in a sorted order. This is called a "memtable".
+- When the memtable grows above a certain size (typically a few megabytes), it will be written to the disk as an SSTable. It will end up as the latest segment of the database along with other old segments. It also has its own index of the contents. Meanwhile, the memory for the outdated memtable will be freed and accept new writes.
+- When looking up a value, we look it up in the sequence of memtable, latest segment, and old segment.
+- The database will periodically merge and compact the segment files. Outdated and overwritten values will be deleted.
 
 ### 4. **[Bloom filters and Compaction strategies]** Why can a Bloom filter safely avoid some SSTable reads despite being probabilistic, and how could the workload influence the choice of compaction strategy?
 
 #### My answer
 
+Bloom filters apply hash functions on the keys and produce a set of numbers that are interpreted as indexes into the array of bits.
+While bloom filters can have false positives - the bits are set to 1 by other keys by accident, but it can efficiently and accurately tell when the queried key does not exist in the SSTable, and we can safely skip that table.
+
+- Size-tiered Compaction: When serveral SSTables reach roughtly the same size, merge them into a bigger table. Files of different sizes can cover overlapping range of keys, so querying a key may need to check different SSTables. Meanwhile, more temporary space will be necessary for large merges, both the inputs and outputs. Size-tiered compaction has higher write throughputs, suitable for scenariso where writes are dominant and reads are relatively rare.
+- Leveled Compaction: SSTables are divided into different levels with increasing size limits. At each level, the tables are partitioned to cover non-overlapping key ranges. When merging, a table is only merged with the next-level tables whose key ranges overlap. This makes the compaction smaller and more incremental. Also, a point read only needs to go through a few candidate tables each level. However, one incoming range may repeatedly rewrite overlapping data already in lower levels, causing a write ampification. Therefore, leveled comapction performs better when reads are dominant and writes only update a small set of hot keys.
 
 ### 5. ★ **[B-Trees]** How does a B-tree locate and update a key, and why do page splits and crash recovery complicate that mechanism?
 
 #### My answer
 
+When looking up a key in a B-tree, it starts at the root page, where the references to its child pages are stored. Child pages stores a continuous range of keys, and the references tell the boundaries of keys that each page is storing. We may need to go futher into the child pages' child pages until we hit the leaf page, where the individual keys are stored. The leaf page either contains the key value inline or a reference to the page where the value can be found.
+
+When updating a key, we first go through a similar process of the lookup and find the leaf page storing the key. Then, we rewrite the pages with the new value. If adding a new key, we need to find the page that is supposed to store the key and add it to that page. However, we may need to split the page and its parent page (sometimes all the way to the root page) into two half-full pages if the page is full.
+
+Since we need to overwrite a page to perform an update, we have to consider cases where the database crashes in midst of the overwrite. Some pages may become corrupted. B-tree tends to implement a "write-head log" to make itself resilient of crashes.
 
 ### 6. ★ **[Comparing B-Trees and LSM-Trees]** For a write-heavy service that also requires predictable point-read latency, how would you reason about choosing between an LSM-tree and a B-tree?
 
 #### My answer
+While it may depend the specific requirments on write throughput and point-read latency, LSM is likely to be a better option in this case.
 
+- LSM provides better write throughput because it incurs sequential I/O compared with B-tree's random I/O, though LSM can also encounter bottlenecks when the memtable fills up too fast and disk I/O cannot catch up.
+- B-tree has more predictable point-read latency because each lookup goes through one page at one level, and the depth of the tree is usually small enough. LSM may need to look up a few different SSTables at different stages of compactions, but the Bloom filter can help reduce the number of disk I/O needed.
 
 ### 7. **[Multi-Column and Secondary Indexes]** How does column order constrain a concatenated index, and how does storing values in or near an index change read and write behavior?
 
 #### My answer
 
+The column order of the concatenated determines how the data are sorted. It is only helpful when we want to make a query with the leading columns. For example, if we have a concatenated index (A, B, C), it is only helpful when we make a query to find certain combinations of (A), (A, B), or (A, B, C).
 
-### 8. ★ **[Data Storage for Analytics and Column-Oriented Storage]** Why does an analytical query that scans many rows benefit from column-oriented storage, and when would that layout become less attractive?
+- Clustered indexes: the values are part of the index structure
+  - Read: the value is or is part of the key per se
+  - Write: clustered indexes determine the physical order that a row is stored in the disk, so we need to sort the rows accordinly
+
+- Stroing the reference to the actual data
+  - The value can be the primary key of the row or a referene to a location on the disk (heap file)
+  - Read: we need to use primary key or the reference to navigate to the value in the heap file
+  - Write: if possible, the heap file can be updated in-place, but if the new value is longer than the preivous one, we may need to find a new place in the heap to store it. After that, we need to update all affected indexes to point to the new location in the heap, or we need to leave a forward pointer at the old heap location to point to the new one.
+- Covering indexes / indexes with included columns
+  - Read: the value is part of the key itself, but it is stored within the index, so we don't have to got to the heap file to get the value
+  - Write: first, we need to update the heap file; after that we need to update the values stored within ithe index
+
+### 8. ★ **[Data Storage for Analytics and Column-Oriented Storage]** Why does an analytical query scans many rows benefit from column-oriented storage, and when would that layout become less attractive?
 
 #### My answer
+
+- If the table has a lot of columns, column-oriented storage enables the engine to load only the necessary columns instead of the whole row. This makes queries more efficient.
+- When all rows are sorted in an appropriate order and there are only a small amount of distinct values, the data can be highly compressed and reduce the usage of disk space.
+- The data file of different columns can be stored separately, so it is easy to scale by adding new servers or resources to handle a subset of columns.
+
+The column-oriented storage also has some drawbacks that make it less attractive in some cases:
+
+- If we often need to read a lot of columns every time, it will be expensive and inefficient for column-oriented storage to combine all the columns, compared with row-oriented storage.
+- For any write operations in a column-oriented storage, it will be stored in the memory at first and merged into the database in bulk. If we have many and frequent writes, it will incur very high overhead for the column-oriented storage. Meanwhile, queries have to combine the results in memory and disk at the same time.
+- Column-oriented storage usually requires a careful and complex schema design to optimize the query efficiency and storage.
 
 
 ### 9. **[Query Execution: Compilation and Vectorization]** How do query compilation and vectorized processing take different routes to reducing CPU cost during large analytical scans?
 
 #### My answer
 
+Query compilation:
+The query engine will generate the code to execute the query. The code will iterate through the rows and load the columns of interest into an output buffer. Then, the query engine will compile the code into machine code, which can be executed by CPU efficiently on the loaded column-encoded data.
+
+Vectorized processing:
+The query is executed not row by row by in batches. The database will have a fixed set of predefined operators, and we can pass arguments to them and get back a batch of values. This makes use of parallelism and efficient bitwise operations of the CPU.
 
 ### 10. **[Materialized Views and Data Cubes]** A dashboard repeatedly computes the same aggregates, but users occasionally invent new filters. What would materializing results improve, and where would it stop helping?
 
 #### My answer
 
+If the dashboard repeated computes the same aggregates, we can consider caching the values according to the different dimensions of these aggregates (data cubes). In this case, the dashboard can load the results efficiently.
+However, data cubes do not have very good flexibility. If the aggregate is too complex (involving too many dimensions) or we often needs very customized query, then materializing will not be able to help much.
 
 ### 11. ★ **[Multidimensional and Full-Text Indexes; Vector Embeddings]** How does the shape of a query lead to different index designs for geographic ranges, keyword conjunctions, and semantic similarity, and where does approximation enter?
+
+For geographic ranges, we usually want to filter by both longitude and latitude. An index with a single dimension is not very helpful.
+For keyword conjunctions, we need to break down the original text into different words or tokens, and we need to find similar words in addition to identical words. This turns a query effectively into a multidimensional query. In this case, we usually use an inverted index.
+For semantic similarity, we need to find values that are close in meanings, even if they are completely different words. In this case, we use embedding models to translate a text document into a vectory of floating-point values. Then, we use cosine similarity, Euclidean distance, or other functions to determine how close there are semantically.
 
 #### My answer
 
@@ -139,9 +198,14 @@ Close the chapter before completing these prompts; do not consult the text.
 
 **Bloom filter** — A compact probabilistic set representation that hashes each key to several bits. A zero bit proves a key is absent, while all-one bits mean only “possibly present,” so an LSM engine can safely skip many SSTables at the cost of occasional false-positive reads.
 
-**Size-tiered compaction** — Similarly sized SSTables are merged into successively larger files. It supports high write throughput, but can leave more overlapping files to check during reads and needs substantial temporary disk space when large files merge.
+**Size-tiered compaction** — When several SSTables reach roughly the same size, they are merged into one larger SSTable; several outputs of that size can later be merged into a still larger one. Because files of different sizes may cover the same key ranges, a read may need to check several SSTables, and a large merge temporarily needs room for both its inputs and output. The trade-off is high write throughput: data is usually rewritten less aggressively, making this strategy attractive when writes dominate and reads are relatively rare.
 
-**Leveled compaction** — SSTables are organized into levels and partitioned into smaller key ranges, with limited overlap at older levels. Incremental compaction improves read efficiency and disk-space usage, generally at the cost of more rewriting than size-tiered compaction.
+**Leveled compaction** — SSTables are divided into levels with increasing size limits and, beyond the newest level, partitioned so files in the same level cover non-overlapping key ranges. When a file is pushed down, it is merged only with the next-level files whose key ranges overlap, making compaction smaller and more incremental. A point read therefore has few candidate files per level, and obsolete versions consume less space; the cost is greater write amplification because one incoming range may repeatedly rewrite overlapping data already in lower levels. This usually suits read-heavy workloads and workloads that repeatedly update a small set of hot keys.
+
+The contrast is therefore not whether compaction happens—both strategies merge sorted files and remove obsolete values—but how eagerly they impose order:
+
+- **Size-tiered:** merge by similar file size → fewer rewrites, more overlapping files, higher read and temporary-space costs.
+- **Leveled:** merge by level and key range → more rewrites, fewer read candidates, tighter space usage.
 
 ### B-trees and storage-engine trade-offs
 
