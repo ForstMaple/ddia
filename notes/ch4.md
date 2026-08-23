@@ -51,25 +51,43 @@ Answer in your own words; uncertainty is useful—mark anything you’re unsure 
 Append-only file is fast for writes because it is just writing a new record at the end of the file instead of overwriting a value. It is slow for reads because we need to scan the whole file to find the latest occurrence of a key.
 An index will incur additional space to store them. There will be computation resources used when we update the index when new data come in.
 
+#### Review
+
+- **Assessment:** Solid.
+- **What works:** You correctly connect append-only writes to minimal write work, linear scans to slow lookups, and indexes to extra space and write maintenance.
+- **Clarification:** Indexes can slow writes substantially because every relevant index must stay consistent with the primary data; their value therefore depends on the actual query patterns.
+
 ### 2. **[Log-Structured Storage]** Which limitations of an in-memory hash index motivate storing records sorted by key in SSTables?
 
 #### My answer
 
 - In-memory hash index is not persistent. It will be lost when we restart the database.
-- It requires a lot of random IO.
 - Memory is expensive to scale as the data grow.
 - We need complicated logic to avoid hash collisions.
 - It does not support range queries very well.
+- Sorting also enables sparse indexes, compression, and low memory merging that reclaims obsolete log entries.
+
+#### Review
+
+- **Assessment:** Mostly right.
+- **What works:** You identified the full-memory key directory, restart/rebuild issue, awkward range queries, and collision/growth concerns that make disk-backed hash tables unattractive.
+- **Clarification:** The in-memory hash table itself does not require “a lot of random I/O”; that problem arises when trying to put the hash table on disk. Sorting also enables sparse indexes, efficient range scans, compression, and low-memory merging that reclaims obsolete log entries.
 
 
 ### 3. ★ **[Constructing and merging SSTables]** Reconstruct the lifecycle of a write in an LSM storage engine, from arrival through memtable persistence and later compaction.
 
-#### My answer
+#### My answer (revised)
 
 - When a new write comes in, it will be stored in an in-memory ordered map (red-black tree, skip list, trie, etc.). Such data structure supports fast insertions and lookups, and it can be read back in a sorted order. This is called a "memtable".
+  - When there is a new write, the engine also keep a separate log of the incoming data. In this case, even if the database or the system crashes, we can recover the memtable and avoid losing any data. Once the memtable is flushed, we can delete these logs.
 - When the memtable grows above a certain size (typically a few megabytes), it will be written to the disk as an SSTable. It will end up as the latest segment of the database along with other old segments. It also has its own index of the contents. Meanwhile, the memory for the outdated memtable will be freed and accept new writes.
 - When looking up a value, we look it up in the sequence of memtable, latest segment, and old segment.
 - The database will periodically merge and compact the segment files. Outdated and overwritten values will be deleted.
+
+#### Review
+
+- **Assessment:** Solid. The earlier durability gap is resolved.
+- **What improved:** You now state that every incoming write is also recorded in a separate durable log, allowing the unflushed memtable to be reconstructed after a crash, and that the corresponding log can be discarded after the memtable is safely flushed. Your lifecycle from write through compaction is complete.
 
 ### 4. **[Bloom filters and Compaction strategies]** Why can a Bloom filter safely avoid some SSTable reads despite being probabilistic, and how could the workload influence the choice of compaction strategy?
 
@@ -81,6 +99,12 @@ While bloom filters can have false positives - the bits are set to 1 by other ke
 - Size-tiered Compaction: When serveral SSTables reach roughtly the same size, merge them into a bigger table. Files of different sizes can cover overlapping range of keys, so querying a key may need to check different SSTables. Meanwhile, more temporary space will be necessary for large merges, both the inputs and outputs. Size-tiered compaction has higher write throughputs, suitable for scenariso where writes are dominant and reads are relatively rare.
 - Leveled Compaction: SSTables are divided into different levels with increasing size limits. At each level, the tables are partitioned to cover non-overlapping key ranges. When merging, a table is only merged with the next-level tables whose key ranges overlap. This makes the compaction smaller and more incremental. Also, a point read only needs to go through a few candidate tables each level. However, one incoming range may repeatedly rewrite overlapping data already in lower levels, causing a write ampification. Therefore, leveled comapction performs better when reads are dominant and writes only update a small set of hot keys.
 
+#### Review
+
+- **Assessment:** Solid.
+- **What works:** You explain the Bloom filter’s one-sided guarantee correctly and connect size-tiered versus leveled compaction to write throughput, read amplification, write amplification, and temporary space.
+- **Clarification:** Strategy choice should also consider sustained compaction bandwidth and disk headroom, since either strategy can cause latency or capacity trouble when background work cannot keep up.
+
 ### 5. ★ **[B-Trees]** How does a B-tree locate and update a key, and why do page splits and crash recovery complicate that mechanism?
 
 #### My answer
@@ -89,47 +113,74 @@ When looking up a key in a B-tree, it starts at the root page, where the referen
 
 When updating a key, we first go through a similar process of the lookup and find the leaf page storing the key. Then, we rewrite the pages with the new value. If adding a new key, we need to find the page that is supposed to store the key and add it to that page. However, we may need to split the page and its parent page (sometimes all the way to the root page) into two half-full pages if the page is full.
 
-Since we need to overwrite a page to perform an update, we have to consider cases where the database crashes in midst of the overwrite. Some pages may become corrupted. B-tree tends to implement a "write-head log" to make itself resilient of crashes.
+Since we need to overwrite a page to perform an update, we have to consider cases where the database crashes in midst of the overwrite. Some pages may become corrupted. B-tree tends to implement a "write-ahead log" to make itself resilient of crashes.
+
+#### Review
+
+- **Assessment:** Solid.
+- **What works:** You correctly describe root-to-leaf traversal, in-place leaf updates, cascading page splits, and the danger of partial multi-page updates or torn pages.
+- **Clarification:** The term is **write-ahead log (WAL)**: the modification is made durable in the WAL before the corresponding tree pages are written, enabling recovery to a consistent state.
 
 ### 6. ★ **[Comparing B-Trees and LSM-Trees]** For a write-heavy service that also requires predictable point-read latency, how would you reason about choosing between an LSM-tree and a B-tree?
 
 #### My answer
 While it may depend the specific requirments on write throughput and point-read latency, LSM is likely to be a better option in this case.
 
-- LSM provides better write throughput because it incurs sequential I/O compared with B-tree's random I/O, though LSM can also encounter bottlenecks when the memtable fills up too fast and disk I/O cannot catch up.
+- LSM provides better write throughput because it incurs sequential I/O compared with B-tree's random I/O, though LSM can also encounter bottlenecks when the memtable fills up too fast and disk I/O cannot catch up. At the same time, LSM flush/compaction can also create latency spikes. It will be good to evaluate the tail latency after the merging and compactions kicks off and determine whether it still meets the requirement of the "predictable point-read latency".
 - B-tree has more predictable point-read latency because each lookup goes through one page at one level, and the depth of the tree is usually small enough. LSM may need to look up a few different SSTables at different stages of compactions, but the Bloom filter can help reduce the number of disk I/O needed.
+
+#### Review
+
+- **Assessment:** Mostly right.
+- **What works:** You identify the central tension: LSM’s sequential, batched writes usually favor throughput, while a shallow B-tree gives a more bounded point-read path.
+- **Clarification:** “Predictable latency” makes the decision depend heavily on the percentile SLO. LSM flush/compaction backpressure can create latency spikes, so benchmark the sustained workload after compactions begin; a strict tail-latency requirement can justify a B-tree despite lower write throughput.
 
 ### 7. **[Multi-Column and Secondary Indexes]** How does column order constrain a concatenated index, and how does storing values in or near an index change read and write behavior?
 
-#### My answer
+#### My answer (revise)
 
 The column order of the concatenated determines how the data are sorted. It is only helpful when we want to make a query with the leading columns. For example, if we have a concatenated index (A, B, C), it is only helpful when we make a query to find certain combinations of (A), (A, B), or (A, B, C).
 
 - Clustered indexes: the values are part of the index structure
   - Read: the value is or is part of the key per se
-  - Write: clustered indexes determine the physical order that a row is stored in the disk, so we need to sort the rows accordinly
+  - Write: clustered indexes determine the physical order that a row is stored in the disk. If the clustered index is not a self-increment id or something similar, there will be some overhead to insert or update a value, which can also cause page splits.
 
 - Stroing the reference to the actual data
   - The value can be the primary key of the row or a referene to a location on the disk (heap file)
   - Read: we need to use primary key or the reference to navigate to the value in the heap file
   - Write: if possible, the heap file can be updated in-place, but if the new value is longer than the preivous one, we may need to find a new place in the heap to store it. After that, we need to update all affected indexes to point to the new location in the heap, or we need to leave a forward pointer at the old heap location to point to the new one.
+
 - Covering indexes / indexes with included columns
-  - Read: the value is part of the key itself, but it is stored within the index, so we don't have to got to the heap file to get the value
+  - Read: the value is not part of the key itself, but it is stored within the index, so we don't have to got to the heap file to get the value
   - Write: first, we need to update the heap file; after that we need to update the values stored within ithe index
+
+#### Review
+
+- **Assessment:** Needs revision.
+- **What works:** Your leftmost-prefix explanation is correct, and you recognize the locality-versus-duplication trade-off among clustered, heap-backed, and covering indexes.
+- **Clarification:** The earlier gap remains in the clustered-index description. The index search key determines ordering and lookup; the stored row is the payload and is not thereby “part of the key.” Maintaining a clustered index also does not re-sort the whole table on every write. The engine locates the target page and updates, splits, or relocates pages as needed. Your covering-index description correctly says that included columns are stored in the index without becoming search-key columns.
+- **Stronger answer:** A concatenated index on `(A, B, C)` is ordered lexicographically, so it efficiently supports predicates beginning with `A`, such as `A`, `(A, B)`, or `(A, B, C)`, but generally not `B` alone. A heap-backed secondary index stores a row reference, making the index smaller and writes cheaper but requiring another lookup to fetch the row. A clustered index stores the row with the ordered index entry, improving read locality but making inserts, updates, and page splits more expensive. A covering index duplicates selected non-key columns beside the search key so covered queries avoid the heap lookup, at the cost of more index space and write maintenance.
 
 ### 8. ★ **[Data Storage for Analytics and Column-Oriented Storage]** Why does an analytical query scans many rows benefit from column-oriented storage, and when would that layout become less attractive?
 
-#### My answer
+#### My answer (revise)
 
 - If the table has a lot of columns, column-oriented storage enables the engine to load only the necessary columns instead of the whole row. This makes queries more efficient.
 - When all rows are sorted in an appropriate order and there are only a small amount of distinct values, the data can be highly compressed and reduce the usage of disk space.
-- The data file of different columns can be stored separately, so it is easy to scale by adding new servers or resources to handle a subset of columns.
+- If some columns are too large or if different subset of columns often fit into different tasks, we can consider storing them in different servers in a distrbuted structure. Nevertheless, it can be more difficult to keep the row order consistent among all the columns.
 
 The column-oriented storage also has some drawbacks that make it less attractive in some cases:
 
 - If we often need to read a lot of columns every time, it will be expensive and inefficient for column-oriented storage to combine all the columns, compared with row-oriented storage.
 - For any write operations in a column-oriented storage, it will be stored in the memory at first and merged into the database in bulk. If we have many and frequent writes, it will incur very high overhead for the column-oriented storage. Meanwhile, queries have to combine the results in memory and disk at the same time.
 - Column-oriented storage usually requires a careful and complex schema design to optimize the query efficiency and storage.
+
+#### Review
+
+- **Assessment:** Needs revision.
+- **What works:** You correctly explain column pruning, compression, costly row reconstruction, and why buffered bulk writes fit columnar storage better than frequent point updates.
+- **Clarification:** The earlier distribution gap remains. Columns in the same row group rely on the same row order, so independently distributing or reordering them would make reconstructing rows difficult and can force network joins. Distributed analytical systems normally partition by sets of rows (often as row groups or shards), while each partition stores its local columns together and aligned.
+- **Stronger answer:** Columnar storage helps scans that touch many rows but few columns because it reads only those columns, compresses similar adjacent values well, and lets the CPU process compact arrays efficiently. It is less attractive for point lookups or queries needing most of each row, and for frequent small updates, because reconstructing rows and updating several column files is costly. Systems therefore buffer updates and merge them in batches. For distributed execution, they normally partition rows across machines and retain aligned column chunks within each partition, rather than placing unrelated columns independently on different servers.
 
 
 ### 9. **[Query Execution: Compilation and Vectorization]** How do query compilation and vectorized processing take different routes to reducing CPU cost during large analytical scans?
@@ -142,6 +193,19 @@ The query engine will generate the code to execute the query. The code will iter
 Vectorized processing:
 The query is executed not row by row by in batches. The database will have a fixed set of predefined operators, and we can pass arguments to them and get back a batch of values. This makes use of parallelism and efficient bitwise operations of the CPU.
 
+#### Review
+
+- **Assessment:** Solid.
+- **What works:** You distinguish specialized generated machine code from interpreted, predefined operators that process column batches.
+- **Clarification:** “Parallelism” needs one qualification: batching can use SIMD, but it does not inherently require multiple CPU cores or threads.
+
+  Suppose the predicate is `product_sk = 42 AND store_sk = 7`:
+
+  - **Compilation specializes the work.** Instead of interpreting a query-plan data structure for every row—asking which operator to call, which column to read, and which comparison to perform—the engine generates one loop containing those exact comparisons. Constants such as `42` and `7` can be embedded in the machine code, operators may be fused, and intermediate values can stay in CPU registers. This removes repeated dispatch, function calls, and unpredictable branches. The resulting small, predictable instruction sequence keeps the CPU pipeline busy and may also be automatically compiled into SIMD instructions.
+  - **Vectorization amortizes the work.** The engine calls a predefined equality operator once for a batch such as 1,024 `product_sk` values, rather than dispatching it 1,024 times. The operator walks contiguous column memory in a tight loop; caches and hardware prefetchers work well because access is sequential. SIMD can compare several values with `42` in one instruction. The engine can produce two bitmaps for the two predicates and combine many row results at once with a bitwise `AND`.
+
+  Thus compilation exploits the CPU by making one query’s instruction stream highly specialized, whereas vectorization exploits it by feeding a general operator a large, regular block of data. Both favor sequential memory access, cache locality, predictable tight loops, pipelining, SIMD, and direct processing of compressed data.
+
 ### 10. **[Materialized Views and Data Cubes]** A dashboard repeatedly computes the same aggregates, but users occasionally invent new filters. What would materializing results improve, and where would it stop helping?
 
 #### My answer
@@ -149,13 +213,32 @@ The query is executed not row by row by in batches. The database will have a fix
 If the dashboard repeated computes the same aggregates, we can consider caching the values according to the different dimensions of these aggregates (data cubes). In this case, the dashboard can load the results efficiently.
 However, data cubes do not have very good flexibility. If the aggregate is too complex (involving too many dimensions) or we often needs very customized query, then materializing will not be able to help much.
 
+#### Review
+
+- **Assessment:** Solid.
+- **What works:** You correctly frame materialization as precomputing recurring dimension-based aggregates and identify its inability to serve unanticipated filters or groupings.
+- **Clarification:** The other side of the trade-off is write/refresh work: underlying changes must be propagated to the materialized result, while raw data is still needed for unsupported questions.
+
 ### 11. ★ **[Multidimensional and Full-Text Indexes; Vector Embeddings]** How does the shape of a query lead to different index designs for geographic ranges, keyword conjunctions, and semantic similarity, and where does approximation enter?
+
+#### My answer (revise)
 
 For geographic ranges, we usually want to filter by both longitude and latitude. An index with a single dimension is not very helpful.
 For keyword conjunctions, we need to break down the original text into different words or tokens, and we need to find similar words in addition to identical words. This turns a query effectively into a multidimensional query. In this case, we usually use an inverted index.
 For semantic similarity, we need to find values that are close in meanings, even if they are completely different words. In this case, we use embedding models to translate a text document into a vectory of floating-point values. Then, we use cosine similarity, Euclidean distance, or other functions to determine how close there are semantically.
 
-#### My answer
+#### Review
+
+- **Assessment:** Needs revision.
+- **What works:** You distinguish two-dimensional geographic predicates, term-based inverted indexes, and embedding-based semantic distance.
+- **Clarification:** The earlier gap remains: approximation is not applied in the same way to all three queries.
+- **Stronger answer:**
+
+  - **Geographic range:** A map-window query constrains latitude and longitude simultaneously, so an R-tree, Bkd-tree, grid, or space-filling-curve index groups nearby points and prunes regions outside the window. The intended predicate is exact: return every point inside the rectangle. Some spatial indexes may first return a conservative set of candidates and then apply the exact coordinates as a final filter, but they should not silently omit an in-range point.
+  - **Keyword conjunction:** An inverted index maps each exact term to its postings list. For `red AND apples`, intersecting the two lists or bitmaps exactly returns documents containing both indexed terms. Stemming, synonyms, typo tolerance, or tokenization may broaden what counts as a matching term, but that is query interpretation—not approximate nearest-neighbor search.
+  - **Semantic similarity:** An embedding model maps the query and documents to points in a high-dimensional space, and a distance function defines which indexed vectors are nearest. A **flat index** computes the distance to every stored vector, so it finds the exact nearest vectors under that distance function, although the embedding itself is only a learned representation of meaning. **IVF** searches only selected vector partitions; a true neighbor can lie just across an unsearched partition boundary. More probes search more partitions, improving recall at the cost of time. **HNSW** navigates a proximity graph from coarse to dense layers; its greedy, limited exploration can take a promising path yet miss the true nearest node. Searching more candidates improves recall but costs more time.
+
+  “Approximate” therefore means that IVF or HNSW may fail to return one of the mathematically closest stored vectors that an exhaustive flat scan would return. It does not mean cosine or Euclidean distance is estimated incorrectly for the candidates actually compared. The trade-off is lower latency and fewer distance calculations in exchange for imperfect **recall**.
 
 
 ## Closed-book recall
@@ -298,6 +381,59 @@ The contrast is therefore not whether compaction happens—both strategies merge
 
 ## Review
 
+**Pattern across your answers:** You reason well from physical layout to I/O behavior and consistently identify the main read/write trade-offs. You have now closed the LSM durability gap. The remaining pattern is precision about boundaries between adjacent ideas—search keys versus stored payload, logical columns versus distribution units, SIMD versus multithreading, and exact predicates versus approximate vector retrieval.
+
+**Review next:**
+
+1. Vector indexes: exact flat search versus the recall/latency trade-offs of IVF and HNSW.
+2. Storing values within the index: search keys, clustered payloads, heap references, and covering columns.
+3. Columnar execution: row-group distribution and how compilation and batching exploit CPU architecture.
+
+**Follow-up:**
+
+1. After an acknowledged LSM write but before a memtable flush, which persisted structure makes recovery possible, and when can its entries be discarded?
+2. Why can an included column let a query avoid a heap lookup even though it is not part of the index’s search key?
+3. Which tuning decision in an approximate vector index trades more work and latency for better recall?
+
 ## Application challenge
 
+You are choosing storage for an event-ingestion service that receives 80,000 writes per second. Most reads are point lookups, and the API has a 20 ms p99 latency SLO. Traffic bursts can last 15 minutes, available SSD space is limited to 1.4 times the live dataset, and a compliance deletion must become physically unrecoverable within 24 hours.
+
+State:
+
+- the storage-engine and compaction decision you would make;
+- which Chapter 4 concepts support it;
+- your assumptions;
+- how the choice could fail;
+- what requirement change would make you choose an alternative.
+
 ## Spaced review
+
+### 2026-08-24
+
+- [ ] Review complete
+
+1. Reconstruct an acknowledged LSM write from WAL append through memtable flush and eventual compaction.
+2. Compare the point-read path and likely latency variance of a B-tree with those of an LSM-tree.
+
+#### My review answers
+
+
+### 2026-08-29
+
+- [ ] Review complete
+
+1. Explain how clustered, heap-backed, and covering indexes place row data differently and how each placement changes reads and writes.
+2. An analytics table has 120 columns, but a query scans four. Why does columnar layout help, and why is distributing one column per server not the core scaling model?
+
+#### My review answers
+
+
+### 2026-09-21
+
+- [ ] Review complete
+
+1. Match these queries to suitable index families: map-window filtering, two-keyword conjunction, and semantic nearest-neighbor search.
+2. Contrast exact flat vector search with IVF or HNSW, including what is traded for lower latency.
+
+#### My review answers
