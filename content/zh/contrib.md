@@ -1,5 +1,7 @@
 ---
 title: 贡献者
+book_kind: backmatter
+search_exclude: true
 weight: 800
 breadcrumbs: false
 ---
@@ -23,7 +25,11 @@ YinGang [@yingang](https://github.com/yingang) 对本书进行了全文校订，
 
 ## 贡献列表
 
-[GitHub 贡献者列表](https://github.com/Vonng/ddia/graphs/contributors)
+头像墙收录提交过 Issue 或 PR 的朋友；无论是否采纳、合并或关闭，反馈本身即是贡献。
+
+{{< contributors data="contributors" >}}
+
+[GitHub 提交贡献者](https://github.com/Vonng/ddia/graphs/contributors)
 
 0. 全文校订 by [@yingang](https://github.com/Vonng/ddia/commits?author=yingang)
 1. [序言初翻修正](https://github.com/Vonng/ddia/commit/afb5edab55c62ed23474149f229677e3b42dfc2c) by [@seagullbird](https://github.com/Vonng/ddia/commits?author=seagullbird)
@@ -35,10 +41,52 @@ YinGang [@yingang](https://github.com/yingang) 对本书进行了全文校订，
 7. 多处翻译修正 by [@songzhibin97](https://github.com/Vonng/ddia/commits?author=songzhibin97) [@MamaShip](https://github.com/Vonng/ddia/commits?author=MamaShip) [@FangYuan33](https://github.com/Vonng/ddia/commits?author=FangYuan33)
 
 
-感谢所有提出意见，作出贡献的朋友们，您可以在这里找到所有贡献的 [Issue 列表](https://github.com/Vonng/ddia/issues) 与 [PR 列表](https://github.com/Vonng/ddia/pulls)：
+完整记录：[Issues](https://github.com/Vonng/ddia/issues) · [Pull Requests](https://github.com/Vonng/ddia/pulls)。
 
 | ISSUE & Pull Requests                           | USER                                                       | Title                                                          |
 |-------------------------------------------------|------------------------------------------------------------|----------------------------------------------------------------|
+| [414](https://github.com/Vonng/ddia/issues/414) | [@Valerie-space](https://github.com/Valerie-space)         | 反馈字体选项                                                     |
+| [413](https://github.com/Vonng/ddia/pull/413)   | [@luchao2424631502](https://github.com/luchao2424631502)   | ch1：修改错别字                                                  |
+| [412](https://github.com/Vonng/ddia/issues/412) | [@chesha1](https://github.com/chesha1)                     | 反馈网站使用体验                                                   |
+| [411](https://github.com/Vonng/ddia/pull/411)   | [@Waynting](https://github.com/Waynting)                   | 修复 GDPR 引文括号渲染                                             |
+| [410](https://github.com/Vonng/ddia/pull/410)   | [@aha-jansen](https://github.com/aha-jansen)               | 修复 EPUB 封面、目录与导航                                          |
+| [409](https://github.com/Vonng/ddia/pull/409)   | [@Klu5ure](https://github.com/Klu5ure)                     | 修正 README 翻译进度                                               |
+| [408](https://github.com/Vonng/ddia/pull/408)   | [@hezhengdong](https://github.com/hezhengdong)             | ch8: 删除多余空行，修复有序列表显示问题                                      |
+| [407](https://github.com/Vonng/ddia/pull/407)   | [@AldenWangExis](https://github.com/AldenWangExis)         | 统一简繁强调格式                                                    |
+| [406](https://github.com/Vonng/ddia/issues/406) | [@AldenWangExis](https://github.com/AldenWangExis)         | 指出简体中文译文中的粗体与斜体格式不一致                                      |
+| [405](https://github.com/Vonng/ddia/pull/405)   | [@AldenWangExis](https://github.com/AldenWangExis)         | 补全简繁术语缩写                                                    |
+| [404](https://github.com/Vonng/ddia/issues/404) | [@AldenWangExis](https://github.com/AldenWangExis)         | 核对简体与繁体中文译文的同步状态                                            |
+| [403](https://github.com/Vonng/ddia/issues/403) | [@AldenWangExis](https://github.com/AldenWangExis)         | 反馈简繁译文不同步                                                   |
+| [402](https://github.com/Vonng/ddia/pull/402)   | [@AldenWangExis](https://github.com/AldenWangExis)         | 优化 ch1 简繁措辞                                                  |
+| [401](https://github.com/Vonng/ddia/pull/401)   | [@AldenWangExis](https://github.com/AldenWangExis)         | 修复 EPUB 目录跳转                                                 |
+| [400](https://github.com/Vonng/ddia/pull/400)   | [@SXP-Simon](https://github.com/SXP-Simon)                 | 补译 ch13 标题                                                    |
+| [399](https://github.com/Vonng/ddia/issues/399) | [@1stcoderXiaoLin](https://github.com/1stcoderXiaoLin)     | 反馈网站不可用                                                     |
+| [398](https://github.com/Vonng/ddia/pull/398)   | [@c2j](https://github.com/c2j)                             | 支持整本 PDF 导出                                                  |
+| [397](https://github.com/Vonng/ddia/pull/397)   | [@daihaowxg](https://github.com/daihaowxg)                 | ch2: 修正一处笔误                                                     |
+| [395](https://github.com/Vonng/ddia/issues/395) | [@ethan-tan-stori](https://github.com/ethan-tan-stori)     | ch6: 指出“兄弟值”译法的可读性问题                                         |
+| [394](https://github.com/Vonng/ddia/issues/394) | [@wayne87140](https://github.com/wayne87140)               | 建议在专有名词后补充英文原文                                               |
+| [393](https://github.com/Vonng/ddia/pull/393)   | [@cg-zhou](https://github.com/cg-zhou)                     | 校正贡献者 GitHub 链接并同步贡献者清单                                     |
+| [391](https://github.com/Vonng/ddia/issues/391) | [@demonkit](https://github.com/demonkit)                   | ch1: 指出机翻不顺并提供修改建议                                           |
+| [390](https://github.com/Vonng/ddia/pull/390)   | [@bearomorphism](https://github.com/bearomorphism)         | ch1: 修正多处文字与排版问题                                              |
+| [389](https://github.com/Vonng/ddia/pull/389)   | [@demo-zexuan](https://github.com/demo-zexuan)             | 恢复 EPUB 导出功能并修复图片显示问题                                      |
+| [388](https://github.com/Vonng/ddia/issues/388) | [@MintBlue](https://github.com/MintBlue)                   | 指出 EPUB 导出功能失效                                                 |
+| [387](https://github.com/Vonng/ddia/pull/387)   | [@ButcherV](https://github.com/ButcherV)                   | part-i: 修正一处重复标点                                               |
+| [386](https://github.com/Vonng/ddia/pull/386)   | [@uncle-lv](https://github.com/uncle-lv)                   | ch2: 优化一处翻译                                                    |
+| [384](https://github.com/Vonng/ddia/pull/384)   | [@PanggNOTlovebean](https://github.com/PanggNOTlovebean)   | docs: 优化中文文档的措辞和表达                                              |
+| [383](https://github.com/Vonng/ddia/pull/383)   | [@PanggNOTlovebean](https://github.com/PanggNOTlovebean)   | docs: 修正 ch4 中的术语和表达错误                                          |
+| [382](https://github.com/Vonng/ddia/pull/382)   | [@uncle-lv](https://github.com/uncle-lv)                   | ch1: 优化一处翻译                                                    |
+| [381](https://github.com/Vonng/ddia/pull/381)   | [@Max-Tortoise](https://github.com/Max-Tortoise)           | ch4: 修正一处术语不完整问题                                               |
+| [377](https://github.com/Vonng/ddia/pull/377)   | [@huang06](https://github.com/huang06)                     | 优化翻译术语                                                        |
+| [375](https://github.com/Vonng/ddia/issues/375) | [@z-soulx](https://github.com/z-soulx)                     | 关于是否 100% 全中文翻译的讨论                                            |
+| [371](https://github.com/Vonng/ddia/pull/371)   | [@lewiszlw](https://github.com/lewiszlw)                   | CPU core → CPU 核心                                               |
+| [369](https://github.com/Vonng/ddia/pull/369)   | [@bbwang-gl](https://github.com/bbwang-gl)                 | ch7: 修正可串行化快照隔离相关表述                                           |
+| [368](https://github.com/Vonng/ddia/pull/368)   | [@yhao3](https://github.com/yhao3)                         | 更新 zh-tw.py 与繁体中文内容                                           |
+| [367](https://github.com/Vonng/ddia/pull/367)   | [@yhao3](https://github.com/yhao3)                         | 修正拼写、格式和标点问题                                                  |
+| [366](https://github.com/Vonng/ddia/pull/366)   | [@yangshangde](https://github.com/yangshangde)             | ch8: 将“电源失败”改为“电源失效”                                           |
+| [365](https://github.com/Vonng/ddia/pull/365)   | [@xyohn](https://github.com/xyohn)                         | ch1: 优化“存储与计算分离”相关翻译                                           |
+| [364](https://github.com/Vonng/ddia/issues/364) | [@xyohn](https://github.com/xyohn)                         | ch1: 优化“存储与计算分离”相关翻译                                           |
+| [363](https://github.com/Vonng/ddia/pull/363)   | [@xyohn](https://github.com/xyohn)                         | ch1: 优化一处翻译                                                    |
+| [362](https://github.com/Vonng/ddia/issues/362) | [@xyohn](https://github.com/xyohn)                         | ch1: 指出一处翻译问题                                                  |
 | [359](https://github.com/Vonng/ddia/pull/359)   | [@c25423](https://github.com/c25423)                       | ch10: 修正一处拼写错误                                                 |
 | [358](https://github.com/Vonng/ddia/pull/358)   | [@lewiszlw](https://github.com/lewiszlw)                   | ch4: 修正一处拼写错误                                                  |
 | [356](https://github.com/Vonng/ddia/pull/356)   | [@lewiszlw](https://github.com/lewiszlw)                   | ch2: 修正一处标点错误                                                  |
@@ -71,7 +119,7 @@ YinGang [@yingang](https://github.com/yingang) 对本书进行了全文校订，
 | [281](https://github.com/Vonng/ddia/pull/281)   | [@lyuxi99](https://github.com/lyuxi99)                     | 更正多处内部链接错误                                                     |
 | [280](https://github.com/Vonng/ddia/pull/280)   | [@lyuxi99](https://github.com/lyuxi99)                     | ch9: 更正内部链接错误                                                  |
 | [279](https://github.com/Vonng/ddia/issues/279) | [@codexvn](https://github.com/codexvn)                     | ch9: 指出公式在 GitHub Pages 显示的问题                                  |
-| [278](https://github.com/Vonng/ddia/pull/278)   | [@LJlkdskdjflsa](https://github.com/LJlkdskdjflsa)         | 发现了繁体中文版本中的错误翻译                                                |
+| [278](https://github.com/Vonng/ddia/pull/278)   | [@truenorth-lj](https://github.com/truenorth-lj)           | 发现了繁体中文版本中的错误翻译                                                |
 | [275](https://github.com/Vonng/ddia/pull/275)   | [@117503445](https://github.com/117503445)                 | 更正 LICENSE 链接                                                  |
 | [274](https://github.com/Vonng/ddia/pull/274)   | [@uncle-lv](https://github.com/uncle-lv)                   | ch7: 修正错别字                                                     |
 | [273](https://github.com/Vonng/ddia/pull/273)   | [@quwang123](https://github.com/quwang123)             | ch7: 统一了 write skew 的翻译                                        |
@@ -117,7 +165,7 @@ YinGang [@yingang](https://github.com/yingang) 对本书进行了全文校订，
 | [166](https://github.com/Vonng/ddia/pull/166)   | [@bp4m4h94](https://github.com/bp4m4h94)                   | ch1: 发现错误的文献索引                                                 |
 | [164](https://github.com/Vonng/ddia/pull/164)   | [@longjiquan](https://github.com/longjiquan)           | preface: 更正错误的标点符号                                             |
 | [163](https://github.com/Vonng/ddia/pull/163)   | [@llmmddCoder](https://github.com/llmmddCoder)             | ch1: 更正错误字                                                     |
-| [160](https://github.com/Vonng/ddia/pull/160)   | [@Zhayhp](https://github.com/Zhayhp)                       | ch2: 建议将 network model 翻译为网状模型                                 |
+| [160](https://github.com/Vonng/ddia/issues/160) | [@Zhayhp](https://github.com/Zhayhp)                       | ch2: 建议将 network model 翻译为网状模型                                 |
 | [159](https://github.com/Vonng/ddia/pull/159)   | [@1ess](https://github.com/1ess)                           | ch4: 更正错误字                                                     |
 | [157](https://github.com/Vonng/ddia/pull/157)   | [@ZvanYang](https://github.com/ZvanYang)                   | ch7: 更正不太通顺的翻译                                                 |
 | [155](https://github.com/Vonng/ddia/pull/155)   | [@ZvanYang](https://github.com/ZvanYang)                   | ch7: 更正不太通顺的翻译                                                 |
@@ -186,13 +234,13 @@ YinGang [@yingang](https://github.com/yingang) 对本书进行了全文校订，
 | [62 ](https://github.com/Vonng/ddia/pull/62)    | [@ych](https://github.com/ych)                             | fix ch1.md typesetting problem                                 |
 | [61 ](https://github.com/Vonng/ddia/pull/61)    | [@xianlaioy](https://github.com/xianlaioy)                 | docs:钟-->种，去掉ou                                                |
 | [60 ](https://github.com/Vonng/ddia/pull/60)    | [@Zombo1296](https://github.com/Zombo1296)                 | 否则 -> 或者                                                       |
-| [59 ](https://github.com/Vonng/ddia/pull/59)    | [@AlexanderMisel](https://github.com/AlexanderMisel)       | 呼叫->调用，显着->显著                                                  |
+| [59 ](https://github.com/Vonng/ddia/pull/59)    | [@brynne8](https://github.com/brynne8)                     | 呼叫 → 调用，显着 → 显著                                               |
 | [58 ](https://github.com/Vonng/ddia/pull/58)    | [@ibyte2011](https://github.com/ibyte2011)                 | Update ch8.md                                                  |
 | [55 ](https://github.com/Vonng/ddia/pull/55)    | [@saintube](https://github.com/saintube)                   | ch8: 修改链接错误                                                    |
 | [54 ](https://github.com/Vonng/ddia/pull/54)    | [@Panmax](https://github.com/Panmax)                       | Update ch2.md                                                  |
 | [53 ](https://github.com/Vonng/ddia/pull/53)    | [@ibyte2011](https://github.com/ibyte2011)                 | Update ch9.md                                                  |
 | [52 ](https://github.com/Vonng/ddia/pull/52)    | [@hecenjie](https://github.com/hecenjie)                   | Update ch1.md                                                  |
-| [51 ](https://github.com/Vonng/ddia/pull/51)    | [@latavin243](https://github.com/latavin243)               | fix 修正ch3 ch4几处翻译                                              |
+| [51 ](https://github.com/Vonng/ddia/pull/51)    | [@qig243](https://github.com/qig243)                       | fix 修正ch3 ch4几处翻译                                              |
 | [50 ](https://github.com/Vonng/ddia/pull/50)    | [@AlexZFX](https://github.com/AlexZFX)                     | 几个疏漏和格式错误                                                      |
 | [49 ](https://github.com/Vonng/ddia/pull/49)    | [@haifeiWu](https://github.com/haifeiWu)                   | Update ch1.md                                                  |
 | [48 ](https://github.com/Vonng/ddia/pull/48)    | [@scaugrated](https://github.com/scaugrated)               | fix typo                                                       |
@@ -201,7 +249,7 @@ YinGang [@yingang](https://github.com/yingang) 对本书进行了全文校订，
 | [44 ](https://github.com/Vonng/ddia/pull/44)    | [@akxxsb](https://github.com/akxxsb)                       | 修正第七章底部链接错误                                                    |
 | [43 ](https://github.com/Vonng/ddia/pull/43)    | [@baijinping](https://github.com/baijinping)               | "更假简单"->"更加简单"                                                 |
 | [42 ](https://github.com/Vonng/ddia/pull/42)    | [@tisonkun](https://github.com/tisonkun)                   | 修复 ch1 中的无序列表格式                                                |
-| [38 ](https://github.com/Vonng/ddia/pull/38)    | [@renjie-c](https://github.com/renjie-c)                   | 纠正多处的翻译小错误                                                     |
+| [38 ](https://github.com/Vonng/ddia/pull/38)    | [@b7woreo](https://github.com/b7woreo)                     | 纠正多处的翻译小错误                                                     |
 | [37 ](https://github.com/Vonng/ddia/pull/37)    | [@tankilo](https://github.com/tankilo)                     | fix translation mistakes in ch4.md                             |
 | [36 ](https://github.com/Vonng/ddia/pull/36)    | [@wwek](https://github.com/wwek)                           | 1.修复多个链接错误 2.名词优化修订 3.错误修订                                     |
 | [35 ](https://github.com/Vonng/ddia/pull/35)    | [@wwek](https://github.com/wwek)                           | fix ch7.md  to ch8.md  link error                              |
@@ -229,4 +277,3 @@ YinGang [@yingang](https://github.com/yingang) 对本书进行了全文校订，
 | [6  ](https://github.com/Vonng/ddia/pull/6)     | [@MuAlex](https://github.com/MuAlex)                       | Ch6 change version1                                            |
 | [5  ](https://github.com/Vonng/ddia/pull/5)     | [@nevertiree](https://github.com/nevertiree)               | Chapter 01语法微调                                                 |
 | [2  ](https://github.com/Vonng/ddia/pull/2)     | [@seagullbird](https://github.com/seagullbird)             | 序言初翻                                                           |
-

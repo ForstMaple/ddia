@@ -1,12 +1,9 @@
 ---
 title: 後記
+book_kind: colophon
 weight: 600
 breadcrumbs: false
 ---
-
-{{< callout type="warning" >}}
-當前頁面來自本書第一版，第二版尚不可用
-{{< /callout >}}
 
 ## 關於作者
 
@@ -18,18 +15,18 @@ breadcrumbs: false
 
 ## 關於譯者
 
-[**馮若航**](https://vonng.com)，網名 [@Vonng](https://github.com/Vonng)。
-PostgreSQL 專家，資料庫老司機，雲計算泥石流。
+[**馮若航**](https://vonng.com)，网名 [@Vonng](https://github.com/Vonng)。
+PostgreSQL 專家，資料庫老司機，雲端計算泥石流。
 PostgreSQL 發行版 [**Pigsty**](https://pgsty.com) 作者與創始人。
 架構師，DBA，全棧工程師 @ TanTan，Alibaba，Apple。
-獨立開源貢獻者，[GitStar Ranking 585](https://gitstar-ranking.com/Vonng)，[國區活躍 Top20](https://committers.top/china)。
-[DDIA](https://ddia.pigsty.io) / [PG Internal](https://pgint.vonng.com) 中文版譯者，資料庫/雲計算 KOL。
+獨立開源貢獻者，[GitStar Ranking 585](https://gitstar-ranking.com/Vonng)，[国区活跃 Top20](https://committers.top/china)。
+[DDIA](https://ddia.pigsty.io) / [PG Internal](https://pgint.vonng.com) 中文版譯者，資料庫/雲端計算 KOL。
 
 
 
 ## 後記
 
-《設計資料密集型應用》封面上的動物是 **印度野豬（Sus scrofa cristatus）**，它是在印度、緬甸、尼泊爾、斯里蘭卡和泰國發現的一種野豬的亞種。與歐洲野豬不同，它們有更高的背部鬃毛，沒有體表絨毛，以及更大更直的頭骨。
+《設計資料密集型應用》封面上的動物是印度野豬（*Sus scrofa cristatus*），它是在印度、緬甸、尼泊爾、斯里蘭卡和泰國發現的一種野豬的亞種。與歐洲野豬不同，它們有更高的背部鬃毛，沒有體表絨毛，以及更大更直的頭骨。
 
 印度野豬有一頭灰色或黑色的頭髮，脊背上有短而硬的毛。雄性有突出的犬齒（稱為 T），用來與對手戰鬥或抵禦掠食者。雄性比雌性大，這些物種平均肩高 33-35 英寸，體重 200-300 磅。他們的天敵包括熊、老虎和各種大型貓科動物。
 

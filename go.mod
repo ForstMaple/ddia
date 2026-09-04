@@ -1,5 +1,5 @@
 module github.com/Vonng/ddia
 
-go 1.24.5
+go 1.27.0
 
-require github.com/imfing/hextra v0.11.0 // indirect
+require github.com/pgsty/oink v1.0.0 // indirect
